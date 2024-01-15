@@ -1,0 +1,9 @@
+type Listing @model @auth(rules: [{allow: public}, {allow: private}, {allow: owner}]) {
+  id: ID!
+  Location: String
+  HouseInfo: String
+  DurationRequired: String
+  Pictures: AWSURL
+  Price: Int
+}
+ 

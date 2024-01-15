@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3anneyv02storagea5c08545",
+  "bucketName": "anney-v0-2storage-a5c08545",
+  "policyUUID": "ba775c9f",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

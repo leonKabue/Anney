@@ -1,0 +1,12 @@
+{
+  "AppSyncApiName": "ANNEYv02",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authANNEYv02",
+      "Outputs.UserPoolId"
+    ]
+  },
+  "AuthModeLastUpdated": "2023-12-27T22:57:40.382Z"
+}
