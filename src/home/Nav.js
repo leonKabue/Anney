@@ -56,7 +56,7 @@ function Nav(props) {
             onClick: () => {
                 navigateHome()
             },
-            src: "./img/logo.png",
+            src: "./logo.png",
             alt: "ANNEY logo",
             style: {outline: "1px solid silver"},
             className: "image-hover-zoom"
@@ -84,7 +84,7 @@ function Nav(props) {
 
         image38464221 : {
             display: props.isSignedIn ? "block" : "None",
-            src: "./img/profile.png",
+            src: "./profile.png",
             alt: "ProfilePicture",
             className: "image-hover-zoom"
         },

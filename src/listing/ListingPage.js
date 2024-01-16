@@ -32,13 +32,14 @@ function ListingPage() {
                     border:"0.5px solid #000",
                     borderRadius: '5px',
                     position: "fixed",
-                    zIndex:"100",
+                    zIndex:"10",
                     backgroundImage:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
                 }}
                 justifyContent="center"
                 alignItems="center"
                 padding={{base:"5px 0px 0px 0px",large:"5px 10px 5px 10px"}}
                 marginTop={{base:"0px", medium:"10px"}}
+                height={{base:"140px", medium:"85px"}}
             >
                 <SearchField 
                     label="search"

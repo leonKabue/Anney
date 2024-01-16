@@ -1,4 +1,4 @@
-import {Authenticator, View, Image, useTheme, Text} from '@aws-amplify/ui-react';
+import {Authenticator, View, Image, useTheme, Text, Flex} from '@aws-amplify/ui-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -20,7 +20,7 @@ function Login(props) {
             <View textAlign="center" padding={tokens.space.small} marginTop="70px">
               <Image
                 alt="My App logo"
-                src="./img/logo.png"
+                src="./logo.png"
                 className='w-20'
               />
             </View>
@@ -41,8 +41,14 @@ function Login(props) {
     }
 
     return (
-      <Authenticator components={components} >
-      </Authenticator>   
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        //backgroundImage="linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
+      >
+        <Authenticator components={components} >
+        </Authenticator>  
+      </Flex> 
       );
 
 }
