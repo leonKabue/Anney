@@ -69,6 +69,24 @@
       "service": "Cognito"
     }
   },
+  "geo": {
+    "listingsMap": {
+      "accessType": "AuthorizedAndGuestUsers",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "ANNEYv02"
+        }
+      ],
+      "isDefault": true,
+      "mapStyle": "VectorEsriStreets",
+      "providerPlugin": "awscloudformation",
+      "service": "Map"
+    }
+  },
   "storage": {
     "s3anneyv02storagea5c08545": {
       "dependsOn": [],

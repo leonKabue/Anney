@@ -42,8 +42,8 @@ function Login(props) {
 
     return (
       <Authenticator components={components} >
-      </Authenticator>
-    );
+      </Authenticator>   
+      );
 
 }
 

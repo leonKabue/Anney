@@ -2,6 +2,9 @@ import { default as EditProfile } from "../ui-components/EditProfile";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 
+import { Flex } from "@aws-amplify/ui-react";
+
+
 
 
 function EditProfilePage(props) {
@@ -16,18 +19,24 @@ function EditProfilePage(props) {
     const profileOverrides = {
         EditProfile : {
             width: {base:"100%", medium: "640px"},
+            height: "auto",
+            overflow: "auto",
             wrap: "wrap",
             shrink: "1",
             grow: "1",
-            transform: {medium:'translate(60%, 0%)'},
             border: '1px solid #ccc',
-            marginTop: "70px",
             style: {position: 'static',
                     zIndex: '1'
                 },
+            marginLeft: {medium:"auto"},
+            marginRight: {medium:"auto"},
+            marginBottom: "50px",
+            marginTop: "60px",
+            backgroundImage:{base:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))", large:"none"},
         },
 
         Content: {
+            gap: "20px",
             shrink: "1",
             grow: "1",
             padding: "15px 5px 15px 5px",
@@ -68,7 +77,9 @@ function EditProfilePage(props) {
         }
     }
 
-    return <EditProfile overrides={profileOverrides}/>;
+    return (
+        <EditProfile overrides={profileOverrides}/>
+    )
 }
 
 export default EditProfilePage;

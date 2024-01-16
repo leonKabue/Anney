@@ -81,7 +81,6 @@ export default function ListingCardCollection(props) {
     <div>
       <Collection
         type="grid"
-        isSearchable="true"
         searchPlaceholder="Search..."
         templateColumns="1fr 1fr"
         autoFlow="row"

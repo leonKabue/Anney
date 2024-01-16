@@ -231,7 +231,7 @@ export default function EditProfile(props) {
             display="block"
             direction="column"
             justifyContent="unset"
-            width="300px"
+            width="50%"
             height="unset"
             gap="unset"
             alignItems="unset"
@@ -355,7 +355,7 @@ export default function EditProfile(props) {
           <Button
             width="unset"
             height="unset"
-            shrink="0"
+            shrink="1"
             size="default"
             isDisabled={false}
             variation="warning"

@@ -33,3 +33,10 @@ width: 20% !important;
   transform: scale(1.1);
   cursor: pointer;
 }
+
+.content {
+  margin-top: 70px;
+  margin-bottom: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}

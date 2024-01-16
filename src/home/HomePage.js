@@ -18,27 +18,36 @@ function HomePage() {
                     zIndex: '1'},
         },
 
+        HomePageRow : {
+            width: "100%",
+            height: "100%",
+            shrink : "1",
+            grow: "1",
+            wrap : {base : "wrap", large: "nowrap"},
+            padding: "0px 0px 0px 0px",
+        },
+
         Left : {
             shrink : "1",
             grow: "1",
             wrap : "nowrap",
-            style:  {base: {flexBasis: '600px' },
-                    large: {flexBasis: '100%'}},
-            height: {base: "100%", large: "700px"},
+            style:  {base: {width: '50%' },
+                    large: {width: '100%'}},
+            height: {base: "100%", large: "100vh"},
         },
 
         Right : {
             shrink : "1",
             grow: "1",
             wrap : "wrap",
-            style:  {base: {flexBasis: '600px' },
-                    large: {flexBasis: '100%'}},
-            height: {base: "100%", large: "700px"},
+            style:  {base: {width: '50%' },
+                    large: {width: '100%'}},
+            height: {base: "100%", large: "100vh"},
         },
 
         PromiseMessage: {
             width: "100%",
-            height: "40vh",
+            height: "30vh",
             padding: "0px 0px 80px 0px",
         },
 

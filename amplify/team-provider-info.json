@@ -17,6 +17,12 @@
       },
       "storage": {
         "s3anneyv02storagea5c08545": {}
+      },
+      "api": {
+        "ANNEYv02": {}
+      },
+      "geo": {
+        "listingsMap": {}
       }
     }
   }

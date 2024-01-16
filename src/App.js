@@ -15,6 +15,9 @@ import { Loader } from '@aws-amplify/ui-react';
 import {getCurrentUser} from 'aws-amplify/auth';
 import { Hub } from "aws-amplify/utils";
 
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+
 async function checkUserSignedIn() {
   try {
       const user = await getCurrentUser();
