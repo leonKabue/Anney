@@ -58,7 +58,7 @@ function EditProfilePage(props) {
         },
 
         image: {
-            src: "./img/profile.png",
+            src: "./profile.png",
             alt: "profile picture"
         },
 
