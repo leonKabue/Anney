@@ -58,7 +58,9 @@ function Nav(props) {
             },
             src: "./logo.png",
             alt: "ANNEY logo",
-            style: {outline: "1px solid silver"},
+            style: {border:"1px solid silver",
+                    borderRadius: "50%",
+                    objectFit: "cover"},
             className: "image-hover-zoom"
         },
         actions: {
