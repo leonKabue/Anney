@@ -1,11 +1,30 @@
-import {HouseDetails } from "../ui-components"
-
+import {ProductDetail } from "../ui-components"
 
 function HouseDetail() {
+
+    const houseDetailsOverrides = {
+
+        ProductDetail: {
+            display: "flex",
+            gap: "24px",
+            direction: {base:"column", large:"row"},
+            justifyContent: "center",
+            alignItems: "center",
+            shrink: "1",
+            grow: "1",
+            backgroundColor: "rgba(0,0,0,0)",
+            width:"100%",
+            position: "relative",
+        },
+
+        image: {
+            border:"1px solid #000",
+            borderRadius: '5px',
+        }
+    }
     return (
-        <>
-        <HouseDetails width={"100%"} />
-        </>
+            
+            <ProductDetail overrides={houseDetailsOverrides} />
     )
 }
 

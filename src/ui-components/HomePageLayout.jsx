@@ -460,7 +460,7 @@ export default function HomePageLayout(props) {
               children="Student Verified&#xA;Quick Bookings&#xA;Best prices"
               {...getOverrideProps(overrides, "Body38464456")}
             ></Text>
-          </Flex>
+      </Flex>
     </Flex>
   );
 }

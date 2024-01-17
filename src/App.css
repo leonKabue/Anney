@@ -35,8 +35,16 @@ width: 20% !important;
 }
 
 .content {
-  margin-top: 70px;
+  margin-top: 65px;
   margin-bottom: 50px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.hoverable-card {
+  transition: transform 0.5s ease;
+}
+
+.hoverable-card:hover {
+  transform: scale(1.05);
 }

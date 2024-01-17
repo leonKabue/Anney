@@ -142,9 +142,16 @@ export default function NavBarHome(props) {
           }
           {...getOverrideProps(overrides, "menu")}
         >
-          <MenuItem {...getOverrideProps(overrides, "signOut")}>Sign Out</MenuItem>
+          <MenuItem {...getOverrideProps(overrides, "trips")}>Your Trips</MenuItem>
+          <MenuItem {...getOverrideProps(overrides, "listings")}>Your Listings</MenuItem>
+          <MenuItem {...getOverrideProps(overrides, "addListing")}>Add Listing</MenuItem>
           <Divider {...getOverrideProps(overrides, "divider")} />
+          <MenuItem {...getOverrideProps(overrides, "notifications")}>Notifications</MenuItem>
           <MenuItem {...getOverrideProps(overrides, "profile")}>Profile</MenuItem>
+          <Divider {...getOverrideProps(overrides, "divider")} />
+          <MenuItem {...getOverrideProps(overrides, "signOut")}>Sign Out</MenuItem>
+          
+          
         </Menu >
         <Flex
           gap="8px"

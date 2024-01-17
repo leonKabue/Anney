@@ -2,10 +2,6 @@ import { default as EditProfile } from "../ui-components/EditProfile";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
 
-import { Flex } from "@aws-amplify/ui-react";
-
-
-
 
 function EditProfilePage(props) {
     let navigate = useNavigate();
@@ -24,15 +20,16 @@ function EditProfilePage(props) {
             wrap: "wrap",
             shrink: "1",
             grow: "1",
-            border: '1px solid #ccc',
+            border: '0.5px solid #000',
+            borderRadius: '15px',
             style: {position: 'static',
                     zIndex: '1'
                 },
             marginLeft: {medium:"auto"},
             marginRight: {medium:"auto"},
             marginBottom: "50px",
-            marginTop: "60px",
-            backgroundImage:{base:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))", large:"none"},
+            marginTop: "65px",
+            backgroundImage:{base:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"},
         },
 
         Content: {

@@ -1,4 +1,4 @@
-import { ListingCardCollection } from "../ui-components"
+import { default as ListingCardCollection } from "../ui-components/ListingCardCollection"
 import { Flex, SearchField } from "@aws-amplify/ui-react"
 import DateRangePicker from "../ui-components/DateRangePicker"
 
@@ -19,7 +19,7 @@ function ListingPage() {
             display="flex"
             shrink= "1"
             grow= "1"
-            marginTop= "60px"
+            marginTop= "65px"
             position="static"
             style={{
                 zIndex: "1",
@@ -29,7 +29,7 @@ function ListingPage() {
             <Flex
                 direction={{base:"column",medium:"row"}}
                 style={{
-                    border:"0.5px solid #000",
+                    border:"1px solid #000",
                     borderRadius: '5px',
                     position: "fixed",
                     zIndex:"10",
@@ -37,20 +37,21 @@ function ListingPage() {
                 }}
                 justifyContent="center"
                 alignItems="center"
-                padding={{base:"5px 0px 0px 0px",large:"5px 10px 5px 10px"}}
-                marginTop={{base:"0px", medium:"10px"}}
+                padding={{base:"15px 0px 0px 0px",medium:"5px 10px 5px 10px"}}
+                marginTop={{base:"0px", medium:"5px"}}
                 height={{base:"140px", medium:"85px"}}
             >
                 <SearchField 
                     label="search"
                     placeholder="Location"
+                    size="large"
                     />
                 <DateRangePicker />
             </Flex>
 
             <Flex
                 marginTop={{base:"140px", medium:"100px"}}>
-                <ListingCardCollection />
+                <ListingCardCollection/>
             </Flex>
             
             

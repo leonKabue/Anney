@@ -82,7 +82,7 @@ export default function ListingCardCollection(props) {
       <Collection
         type="grid"
         searchPlaceholder="Search..."
-        templateColumns="1fr 1fr"
+        templateColumns={{small:"1fr", large:"1fr 1fr"}}
         autoFlow="row"
         alignItems="stretch"
         justifyContent="stretch"
@@ -98,12 +98,18 @@ export default function ListingCardCollection(props) {
           }
           return (
             <ListingCard
+              style ={{
+                border: "0.5px solid #000",
+                borderRadius: "5px",
+              }}
               listing={item}
               height="auto"
               width="auto"
               margin="1rem 1rem 1rem 1rem"
+              backgroundColor="clear"
               key={item.id}
               {...(overrideItems && overrideItems({ item, index }))}
+              className="hoverable-card"
             ></ListingCard>
           );
         }}

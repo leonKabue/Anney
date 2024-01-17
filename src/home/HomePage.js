@@ -13,7 +13,7 @@ function HomePage() {
             grow: "1",
             wrap : {base : "wrap", large: "wrap"},
             padding: "0px 0px 0px 0px",
-            marginTop: "70px",
+            marginTop: "65px",
             style: {position: 'static',
                     zIndex: '1'},
         },
@@ -86,6 +86,12 @@ function HomePage() {
 
         PostHouseMessage: {
             height: {base: "20%", large: "30%"},
+        },
+
+        PostHouseButton: {
+            onClick: () => {
+                navigate("/Listings-add")
+            },
         },
 
         Eyebrow38464371: {

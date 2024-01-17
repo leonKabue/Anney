@@ -4,7 +4,6 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
-export { default as HouseDetails } from "./HouseDetails";
 export { default as ListingCard } from "./ListingCard";
 export { default as ListingCardCollection } from "./ListingCardCollection";
 export { default as ListingCreateForm } from "./ListingCreateForm";

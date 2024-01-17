@@ -33,6 +33,7 @@ function Nav(props) {
     const navigateHome = useNavigateAction({ type: "url", url: "/home" });
     const navigateLogin = useNavigateAction({ type: "url", url: "/login" });
     const navigateProfile = useNavigateAction({ type: "url", url: "/profile" });
+    const navigateAddListing = useNavigateAction({ type: "url", url: "/listings-add" });
 
     const navOverrides = {
         NavBarHome: {
@@ -60,7 +61,7 @@ function Nav(props) {
             alt: "ANNEY logo",
             style: {border:"1px solid silver",
                     borderRadius: "50%",
-                    objectFit: "cover"},
+                    objectFit: "cover "},
             className: "image-hover-zoom"
         },
         actions: {
@@ -104,7 +105,13 @@ function Nav(props) {
 
         profile : {
             onClick: () => {
-                if (props.isSignedIn) { navigateProfile()}
+               navigateProfile()
+            }
+        },
+
+        addListing: {
+            onClick: () => {
+                navigateAddListing()
             }
         }
 

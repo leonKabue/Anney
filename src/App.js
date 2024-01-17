@@ -4,6 +4,8 @@ import ListingPage from "./listing/ListingPage";
 import Footer from "./home/Footer";
 import Login from "./auth/Login";
 import EditProfilePage from "./profile/EditProfilePage";
+import HouseDetail from "./listing/HouseDetail";
+import AddListingPage from "./listing/AddListingPage";
 
 import "./App.css";
 
@@ -81,6 +83,14 @@ function App() {
         <Route
           path="/login"
           element={<Login isSignedIn={isUserSignedIn} />}
+        ></Route>
+        <Route
+          path="/listings-details"
+          element={<HouseDetail isSignedIn={isUserSignedIn} />}
+        ></Route>
+        <Route
+          path="/listings-add"
+          element={<AddListingPage isSignedIn={isUserSignedIn} />}
         ></Route>
         <Route
           path="/profile"
