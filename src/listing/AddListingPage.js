@@ -45,6 +45,7 @@ function AddListingPage(props) {
             minHeight:"calc(100vh - 60px)"
         }}
         margin={{base:"65px 0px 60px 0px", medium:"65px auto 60px auto"}}
+        height={"auto"}
         width={{base:"100vw", medium:"60vw"}}
         direction="column"
         justifyContent={"flex-start"}

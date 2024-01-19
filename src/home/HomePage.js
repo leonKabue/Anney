@@ -64,13 +64,13 @@ function HomePage() {
 
         imageHome: {
             width: "100%",
-            height: {base: "40%", large: "30%"},
+            height: "30%",
             src : "home2.png"
         },
 
         imageHome2: {
             width: "100%",
-            height: {base: "20%", large: "30%"},
+            height: "30%",
             src : "home.png"
         },
 
