@@ -17,21 +17,37 @@ function AddListingPage(props) {
 
     const ListingCreateFormOverride = {
         ListingCreateForm : {
+            position: "relative",
             width: "100%",
+            shrink: "1",
+            grow: "1"
+        },
+
+        Location: {
+            width: "100%",
+            shrink: "1",
+            grow: "1"
+        },
+
+        HouseInfo : {
+            width: "100%",
+            shrink: "1",
+            grow: "1"
         }
     }
 
     return (
         <Flex
         style={{
-            margin : "65px auto 60px auto",
             backgroundImage:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))",
             border:"0.2px solid #000",
             borderRadius: '15px',
+            minHeight:"calc(100vh - 60px)"
         }}
-        width={{base:"100%", medium:"60%"}}
+        margin={{base:"65px 0px 60px 0px", medium:"65px auto 60px auto"}}
+        width={{base:"100vw", medium:"60vw"}}
         direction="column"
-        justifyContent={"center"}
+        justifyContent={"flex-start"}
         alignContent={"center"}
         alignItems={"center"}
         position={"relative"}
@@ -52,7 +68,7 @@ function AddListingPage(props) {
                 height="unset"
                 gap="unset"
                 alignItems="unset"
-                shrink="0"
+                shrink="1"
                 position="relative"
                 padding="0px 0px 0px 0px"
                 whiteSpace="pre-wrap"

@@ -1,16 +1,14 @@
-/***************************************************************************
- * The contents of this file were generated with Amplify Studio.           *
- * Please refrain from making any modifications to this file.              *
- * Any changes to this file will be overwritten when running amplify pull. *
- **************************************************************************/
 
-/* eslint-disable */
 import * as React from "react";
 import { Button, Flex, Grid, TextField, useTheme } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createListing } from "../graphql/mutations";
+
+import ImageUploader from "./ImageUploader"
+
 const client = generateClient();
+
 export default function ListingCreateForm(props) {
   const {
     clearOnSuccess = true,
@@ -72,11 +70,11 @@ export default function ListingCreateForm(props) {
     return validationResponse;
   };
   return (
-    
+
     <Grid
       as="form"
       rowGap="15px"
-      columnGap="15px"
+      columnGap="5px"
       padding={tokens.space.medium.value}
       onSubmit={async (event) => {
         event.preventDefault();
@@ -140,6 +138,7 @@ export default function ListingCreateForm(props) {
       {...rest}
     >
       <TextField
+
         label={
           <span style={{ display: "inline-flex" }}>
             <span>Location</span>
@@ -238,39 +237,8 @@ export default function ListingCreateForm(props) {
         hasError={errors.DurationRequired?.hasError}
         {...getOverrideProps(overrides, "DurationRequired")}
       ></TextField>
-      <TextField
-        label={
-          <span style={{ display: "inline-flex" }}>
-            <span>Pictures</span>
-            <span style={{ color: "red" }}>*</span>
-          </span>
-        }
-        isRequired={true}
-        isReadOnly={false}
-        value={Pictures}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              Location,
-              HouseInfo,
-              DurationRequired,
-              Pictures: value,
-              Price,
-            };
-            const result = onChange(modelFields);
-            value = result?.Pictures ?? value;
-          }
-          if (errors.Pictures?.hasError) {
-            runValidationTasks("Pictures", value);
-          }
-          setPictures(value);
-        }}
-        onBlur={() => runValidationTasks("Pictures", Pictures)}
-        errorMessage={errors.Pictures?.errorMessage}
-        hasError={errors.Pictures?.hasError}
-        {...getOverrideProps(overrides, "Pictures")}
-      ></TextField>
+      <ImageUploader numImages={4}/>
+
       <TextField
         label={
           <span style={{ display: "inline-flex" }}>
@@ -309,7 +277,8 @@ export default function ListingCreateForm(props) {
         {...getOverrideProps(overrides, "Price")}
       ></TextField>
       <Flex
-        justifyContent="space-between"
+        justifyContent="center"
+        maxHeight={"50px"}
         {...getOverrideProps(overrides, "CTAFlex")}
       >
         <Button

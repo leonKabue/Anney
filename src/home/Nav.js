@@ -53,6 +53,14 @@ function Nav(props) {
             },
             className: "hoverable-text"
         },
+
+        Market : {
+            onClick: () => {
+                navigateListing()
+            },
+            className: "hoverable-text"
+        },
+
         image38464215:  {
             onClick: () => {
                 navigateHome()
@@ -78,7 +86,6 @@ function Nav(props) {
             children: props.isSignedIn ? "Welcome " +  username
             : "Welcome Guest!",
             display: {base: "None", large: "block"} ,
-
         },
 
         MyIcon : {

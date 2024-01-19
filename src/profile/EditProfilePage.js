@@ -17,6 +17,7 @@ function EditProfilePage(props) {
             width: {base:"100%", medium: "640px"},
             height: "auto",
             overflow: "auto",
+            minHeight: "calc(100vh - 60px)",
             wrap: "wrap",
             shrink: "1",
             grow: "1",
@@ -27,7 +28,7 @@ function EditProfilePage(props) {
                 },
             marginLeft: {medium:"auto"},
             marginRight: {medium:"auto"},
-            marginBottom: "50px",
+            marginBottom: {base:"10px", medium:"50px"},
             marginTop: "65px",
             backgroundImage:{base:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"},
         },
@@ -60,7 +61,7 @@ function EditProfilePage(props) {
         },
 
         UploadNewImage: {
-            className: "hoverable-text"
+            className: "hoverable-text" 
         },
 
         TextField29766923: {

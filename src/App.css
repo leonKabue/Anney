@@ -48,3 +48,19 @@ width: 20% !important;
 .hoverable-card:hover {
   transform: scale(1.05);
 }
+
+.site-footer {
+  position: relative;
+  height: 50px;
+  bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .site-footer {
+    position: fixed;
+    bottom: 0;
+    height: unset;
+    z-index: 1000;
+  }
+}
+

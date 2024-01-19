@@ -9,7 +9,7 @@ function Login(props) {
   useEffect(() => {
     console.log(props.isSignedIn)
     if (props.isSignedIn) {
-        navigate('/home');
+        navigate('/listings');
     }}, [props.isSignedIn])
 
   const components = {

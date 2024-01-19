@@ -14,7 +14,7 @@ function ListingPage() {
             justifyContent="flex-start"
             alignItems="center"
             overflow="hidden"
-            padding="0px 0px 50px 0px"
+            padding={{base:"0px 0px 10px 0px", medium:"0px 0px 60px 0px"}}
             backgroundImage="linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
             display="flex"
             shrink= "1"
@@ -29,11 +29,12 @@ function ListingPage() {
             <Flex
                 direction={{base:"column",medium:"row"}}
                 style={{
-                    border:"1px solid #000",
-                    borderRadius: '5px',
+                    border:"0.2px solid #000",
+                    borderRadius: '20px',
                     position: "fixed",
                     zIndex:"10",
-                    backgroundImage:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
+                    backgroundColor:"rgba(255,255,255,0.9)",
+                    //backgroundImage:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
                 }}
                 justifyContent="center"
                 alignItems="center"
@@ -44,7 +45,7 @@ function ListingPage() {
                 <SearchField 
                     label="search"
                     placeholder="Location"
-                    size="large"
+                    size="medium"
                     />
                 <DateRangePicker />
             </Flex>

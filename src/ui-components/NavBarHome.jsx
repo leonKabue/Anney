@@ -81,16 +81,48 @@ export default function NavBarHome(props) {
           children="Welcome"
           {...getOverrideProps(overrides, "Welcome")}
         ></Text>
-        <Button
+        <Text
+          fontFamily="Inter"
+          fontSize="16px"
+          fontWeight="600"
+          color="rgba(4,125,149,1)"
+          lineHeight="24px"
+          textAlign="left"
+          display="block"
+          direction="column"
+          justifyContent="unset"
           width="unset"
           height="unset"
+          gap="unset"
+          alignItems="unset"
           shrink="0"
-          size="default"
-          isDisabled={false}
-          variation="link"
+          position="relative"
+          padding="0px 0px 0px 0px"
+          whiteSpace="pre-wrap"
           children="Listings"
           {...getOverrideProps(overrides, "Listings")}
-        ></Button>
+        ></Text>
+        <Text
+          fontFamily="Inter"
+          fontSize="16px"
+          fontWeight="600"
+          color="rgba(4,125,149,1)"
+          lineHeight="24px"
+          textAlign="left"
+          display="block"
+          direction="column"
+          justifyContent="unset"
+          width="unset"
+          height="unset"
+          gap="unset"
+          alignItems="unset"
+          shrink="0"
+          position="relative"
+          padding="0px 0px 0px 0px"
+          whiteSpace="pre-wrap"
+          children="Market"
+          {...getOverrideProps(overrides, "Market")}
+        ></Text>
       </Flex>
       <Flex
         gap="32px"
@@ -142,9 +174,10 @@ export default function NavBarHome(props) {
           }
           {...getOverrideProps(overrides, "menu")}
         >
-          <MenuItem {...getOverrideProps(overrides, "trips")}>Your Trips</MenuItem>
+          <MenuItem {...getOverrideProps(overrides, "bookings")}>Your Bookings</MenuItem>
           <MenuItem {...getOverrideProps(overrides, "listings")}>Your Listings</MenuItem>
           <MenuItem {...getOverrideProps(overrides, "addListing")}>Add Listing</MenuItem>
+          <MenuItem {...getOverrideProps(overrides, "postItem")}>Post Item</MenuItem>
           <Divider {...getOverrideProps(overrides, "divider")} />
           <MenuItem {...getOverrideProps(overrides, "notifications")}>Notifications</MenuItem>
           <MenuItem {...getOverrideProps(overrides, "profile")}>Profile</MenuItem>
