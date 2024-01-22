@@ -5,7 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Flex, Text } from "@aws-amplify/ui-react";
 
 
-export default function ResponsiveDateRangePickers() {
+export default function ResponsiveDateRangePickers(props) {
 
     
 
@@ -24,7 +24,7 @@ export default function ResponsiveDateRangePickers() {
         padding="10px 10px 10px 10px"
         > 
             <LocalizationProvider dateAdapter={AdapterDayjs} >
-                <DatePicker label="Check-in"
+                <DatePicker label= {props.labelStart ? props.labelStart : "Check-in"}
                             slotProps={{
                                 field: {
                                     clearable: true
@@ -32,7 +32,7 @@ export default function ResponsiveDateRangePickers() {
                             }}
                             ></DatePicker>
                 <Text padding="15px 0 20px 0">to</Text>
-                <DatePicker label="Check-out"
+                <DatePicker label={props.labelEnd ? props.labelEnd : "Check-out"}
                             slotProps={{
                                 field: {
                                     clearable: true

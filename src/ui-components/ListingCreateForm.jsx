@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Flex, Grid, TextField, useTheme } from "@aws-amplify/ui-react";
+import { Button, Flex, Grid, TextField, TextAreaField, useTheme } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createListing } from "../graphql/mutations";
@@ -76,6 +76,8 @@ export default function ListingCreateForm(props) {
     return validationResponse;
   };
 
+  const MainHouseFeatures = "Fully equipped kitchen with appliances (oven, fridge, microwave).\nIn-unit laundry (washer and dryer).\nHeating and air conditioning.\nHigh-speed internet/Wi-Fi.\nCloset or wardrobe space.\nWork/study desk.\nSmoke detectors and carbon monoxide detectors.\nShower and/or bathtub\n";
+  
   return (
     <Grid
       as="form"
@@ -194,16 +196,32 @@ export default function ListingCreateForm(props) {
       ></TextField>
         
       {/* Available to */}
+      <TextField
+        label=
+        {
+          <span style={{ display: "inline-flex" }}>
+            <span>Available To</span>
+            <span style={{ color: "red" }}>*</span>
+          </span>
+        }
+        //placeholder="835th and Walnut"
+        isRequired={true}
+        isReadOnly={false}
+        type="date"
+        {...getOverrideProps(overrides, "availableFromField")}
+      ></TextField>
 
-      <DateRangePicker />
+      <DateRangePicker labelStart="Available From" labelEnd="Available To"/>
+
       {/* Monthly cost */}
       <TextField
         label={
           <span style={{ display: "inline-flex" }}>
-            <span>Price</span>
+            <span>Monthly Cost</span>
             <span style={{ color: "red" }}>*</span>
           </span>
         }
+        placeholder="$500 per month"
         isRequired={true}
         isReadOnly={false}
         type="number"
@@ -236,7 +254,7 @@ export default function ListingCreateForm(props) {
       ></TextField>
 
       {/* Pictures */}
-
+      <ImageUploader numImages={10} />
       {/* Tell us a bit more about your house to help perspective renters */}
 
 
@@ -244,39 +262,20 @@ export default function ListingCreateForm(props) {
       <TextField
         label={
           <span style={{ display: "inline-flex" }}>
-            <span>Space</span>
+            <span>Title</span>
             <span style={{ color: "red" }}>*</span>
           </span>
         }
+        descriptiveText="Catch potential renters' attention with a unique and factual title"
+        placeholder="Stylish Single Room in 3 Bedroom Apt Near Center City"
         isRequired={true}
         isReadOnly={false}
-        value={Location}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              Location: value,
-              HouseInfo,
-              DurationRequired,
-              Pictures,
-              Price,
-            };
-            const result = onChange(modelFields);
-            value = result?.Location ?? value;
-          }
-          if (errors.Location?.hasError) {
-            runValidationTasks("Location", value);
-          }
-          setLocation(value);
-        }}
-        onBlur={() => runValidationTasks("Location", Location)}
-        errorMessage={errors.Location?.errorMessage}
-        hasError={errors.Location?.hasError}
-        {...getOverrideProps(overrides, "Location")}
+
+        {...getOverrideProps(overrides, "TitleTextField")}
       ></TextField>
 
       {/* about place */}
-      <TextField
+      <TextAreaField
         label={
           <span style={{ display: "inline-flex" }}>
             <span>About Place</span>
@@ -285,113 +284,65 @@ export default function ListingCreateForm(props) {
         }
         isRequired={true}
         isReadOnly={false}
-        value={HouseInfo}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              Location,
-              HouseInfo: value,
-              DurationRequired,
-              Pictures,
-              Price,
-            };
-            const result = onChange(modelFields);
-            value = result?.HouseInfo ?? value;
-          }
-          if (errors.HouseInfo?.hasError) {
-            runValidationTasks("HouseInfo", value);
-          }
-          setHouseInfo(value);
-        }}
-        onBlur={() => runValidationTasks("HouseInfo", HouseInfo)}
-        errorMessage={errors.HouseInfo?.errorMessage}
-        hasError={errors.HouseInfo?.hasError}
-        {...getOverrideProps(overrides, "HouseInfo")}
-      ></TextField>
+        descriptiveText="What would you like the guests to know"
+        placeholder="Step into this charming, updated 2-bedroom city apartment with a spacious layout and modern amenities. Hardwood floors, a fully-equipped kitchen with stainless steel appliances, and a cozy living space await you, complemented by serene views and abundant natural light. With comfortable queen beds, ample storage, and a dedicated work area, this urban haven combines the tranquility of home with the convenience of city living—complete with building security, laundry facilities, and private parking, all just a short walk from public transport and city buzz. Ready for your personal touch, this apartment is the perfect canvas for your new beginning."
+        rows = {7}
+
+        {...getOverrideProps(overrides, "AboutPlaceTextAreaField")}
+      ></TextAreaField>
       
       {/* location info */}
-      <TextField
+      <TextAreaField
         label={
           <span style={{ display: "inline-flex" }}>
-            <span>Price</span>
+            <span>Location Information</span>
             <span style={{ color: "red" }}>*</span>
           </span>
         }
         isRequired={true}
         isReadOnly={false}
-        type="number"
-        step="any"
-        value={Price}
-        onChange={(e) => {
-          let value = isNaN(parseInt(e.target.value))
-            ? e.target.value
-            : parseInt(e.target.value);
-          if (onChange) {
-            const modelFields = {
-              Location,
-              HouseInfo,
-              DurationRequired,
-              Pictures,
-              Price: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.Price ?? value;
-          }
-          if (errors.Price?.hasError) {
-            runValidationTasks("Price", value);
-          }
-          setPrice(value);
-        }}
-        onBlur={() => runValidationTasks("Price", Price)}
-        errorMessage={errors.Price?.errorMessage}
-        hasError={errors.Price?.hasError}
-        {...getOverrideProps(overrides, "Price")}
-      ></TextField>
+        descriptiveText="How would you describe the location of your house"
+        placeholder="Located just a 10-minute walk from the vibrant University District, this property positions you perfectly for both academic focus and leisure. Enjoy the ease of access to campus libraries, lecture halls, and study groups without compromising on a quick trip to your favorite coffee shop or local eatery. For those nights out or cultural immersions, the neighborhood theater and art scene are just around the corner."
+        rows = {4}
 
+        {...getOverrideProps(overrides, "LocationInfoTextAreaField")}
+      ></TextAreaField>
+      
       {/* House Features */}
+      <TextAreaField
+        label={
+          <span style={{ display: "inline-flex" }}>
+            <span>House Features</span>
+            <span style={{ color: "red" }}>*</span>
+          </span>
+        }
+        isRequired={true}
+        isReadOnly={false}
+        descriptiveText="What features does your house?"
+        placeholder={MainHouseFeatures}
+        rows = {8}
+
+        {...getOverrideProps(overrides, "AboutPlaceTextAreaField")}
+      ></TextAreaField>
+
 
       {/* additional info */}
-      <TextField
+      <TextAreaField
         label={
           <span style={{ display: "inline-flex" }}>
-            <span>Price</span>
-            <span style={{ color: "red" }}>*</span>
+            <span>Additional Information</span>
           </span>
         }
-        isRequired={true}
+        isRequired={false}
         isReadOnly={false}
-        type="number"
-        step="any"
-        value={Price}
-        onChange={(e) => {
-          let value = isNaN(parseInt(e.target.value))
-            ? e.target.value
-            : parseInt(e.target.value);
-          if (onChange) {
-            const modelFields = {
-              Location,
-              HouseInfo,
-              DurationRequired,
-              Pictures,
-              Price: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.Price ?? value;
-          }
-          if (errors.Price?.hasError) {
-            runValidationTasks("Price", value);
-          }
-          setPrice(value);
-        }}
-        onBlur={() => runValidationTasks("Price", Price)}
-        errorMessage={errors.Price?.errorMessage}
-        hasError={errors.Price?.hasError}
-        {...getOverrideProps(overrides, "Price")}
-      ></TextField>
+        descriptiveText="Anything else you would like guests to know?"
+        rows = {4}
+
+        {...getOverrideProps(overrides, "AboutPlaceTextAreaField")}
+      ></TextAreaField>
 
 
-      <ImageUploader numImages={4} />
+      
 
       <Flex
         justifyContent="center"

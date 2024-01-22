@@ -24,8 +24,6 @@ function ImageUploader(props) {
                        backgroundColor={"transparent"}
                        borderRadius= '5px'
                        position={"relative"}
-                       shrink="1"
-                       grow="1"
                  >{children}</Card>;
         },
         DropZone({ children, displayText, inDropZone, ...rest }) {
@@ -37,7 +35,7 @@ function ImageUploader(props) {
               backgroundColor={"transparent"}
               {...rest}
             >
-              <Text>Drop Images</Text>
+              <Text>Drop House Pictures</Text>
               <Divider size="small" maxWidth="10rem" />
               {children}
             </Flex>
