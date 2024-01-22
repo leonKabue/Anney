@@ -1,4 +1,4 @@
-import {ProductDetail } from "../ui-components"
+import {default as ProductDetail} from "../ui-components/ProductDetail"
 
 function HouseDetail() {
 

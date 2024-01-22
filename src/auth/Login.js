@@ -1,15 +1,15 @@
 import {Authenticator, View, Image, useTheme, Text, Flex} from '@aws-amplify/ui-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigateAction } from "../ui-components/utils.js"
 import { useEffect } from 'react';
 
 function Login(props) {
 
-  let navigate = useNavigate();
+  const navigateListing = useNavigateAction({ type: "url", url: "/listings" });
+  const navigateHome = useNavigateAction({ type: "url", url: "/home" });
 
   useEffect(() => {
-    console.log(props.isSignedIn)
     if (props.isSignedIn) {
-        navigate('/listings');
+        navigateListing();
     }}, [props.isSignedIn])
 
   const components = {

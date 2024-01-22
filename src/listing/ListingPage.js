@@ -15,12 +15,12 @@ function ListingPage() {
             alignItems="center"
             overflow="hidden"
             padding={{base:"0px 0px 10px 0px", medium:"0px 0px 60px 0px"}}
-            backgroundImage="linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
+            backgroundImage="linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1) "
             display="flex"
             shrink= "1"
             grow= "1"
             marginTop= "65px"
-            position="static"
+            position="static"  
             style={{
                 zIndex: "1",
                 wrap : {base : "wrap", large: "wrap"},

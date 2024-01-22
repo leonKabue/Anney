@@ -38,23 +38,23 @@ function AddListingPage(props) {
 
     return (
         <Flex
-        style={{
-            backgroundImage:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))",
-            border:"0.2px solid #000",
-            borderRadius: '15px',
-            minHeight:"calc(100vh - 60px)"
-        }}
-        margin={{base:"65px 0px 60px 0px", medium:"65px auto 60px auto"}}
-        height={"auto"}
-        width={{base:"100vw", medium:"60vw"}}
-        direction="column"
-        justifyContent={"flex-start"}
-        alignContent={"center"}
-        alignItems={"center"}
-        position={"relative"}
-        shrink="1"
-        grow="1"
-        >   
+            style={{
+                backgroundImage:"linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))",
+                border:"0.2px solid #000",
+                borderRadius: '15px',
+                minHeight:"calc(100vh - 60px)"
+            }}
+            margin={{base:"65px 0px 60px 0px", medium:"65px auto 60px auto"}}
+            height={{base:"100vh", large:"auto"}}
+            width={{base:"100vw", medium:"60vw"}}
+            direction="column"
+            justifyContent={"flex-start"}
+            alignContent={"center"}
+            alignItems={"center"}
+            position={"relative"}
+            shrink="1"
+            grow="1"
+        >
             <Text
                 fontFamily="Inter"
                 fontSize={{base:"20px", medium:"24px"}}

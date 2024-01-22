@@ -2,32 +2,38 @@
 import { default as NavBarHome } from "../ui-components/NavBarHome"
 import { useNavigateAction } from "../ui-components/utils.js"
 import { useState, useEffect } from 'react';
-import { getCurrentUser, signOut } from 'aws-amplify/auth';
+import {  signOut } from 'aws-amplify/auth';
+import {getUrl } from "aws-amplify/storage";
 
 import React from 'react';
 
-async function handleGetUserName() {
-  try {
-    const user = await getCurrentUser();
-    return user.username;
-  } catch (error) {
-    return "";
+async function getProfilePic(key, setProfilePic) {
+    if (!key || key === "./profile.png") {
+      setProfilePic("./profile.png");
+      return;
+    } else {
+      try {
+        const picURL = await getUrl({ key: key });
+        setProfilePic(picURL.url);
+      } catch (error) {
+        console.error("Could not get profile pic", error);
+        setProfilePic("./profile.png");
+      }
+    }
   }
-}
 
 function Nav(props) {
 
     const [username, setUsername] = useState('');
+    const [profilePic, setProfilePic] = useState("./profile.png");
 
     useEffect(() => {
-        handleGetUserName()
-            .then(fetchedUsername => {
-                setUsername(fetchedUsername);
-            })
-            .catch(error => {
-                console.error("Failed to fetch user attributes:", error);
-            });
-    }, [props.isSignedIn]);
+        if (props.user) {
+            setUsername(props.user.userProfile.username);
+            const key = props.user.userProfile.picture;
+            getProfilePic(key, setProfilePic);
+        }
+    }, [props.user, setProfilePic]);
 
     const navigateListing = useNavigateAction({ type: "url", url: "/listings" });
     const navigateHome = useNavigateAction({ type: "url", url: "/home" });
@@ -43,7 +49,7 @@ function Nav(props) {
             position: "fixed",
             top: "0",
             left: "0",
-            padding: "10px 20px ",
+            padding: "10px 10px ",
             marginBottom: "10px",
             style: {zIndex: "100"},
         },
@@ -89,12 +95,13 @@ function Nav(props) {
         },
 
         MyIcon : {
-            display: props.isSignedIn ? "block" : "None",
+            display: props.isSignedIn ? {base:"None" ,medium:"block"} : "None",
+
         },
 
         image38464221 : {
             display: props.isSignedIn ? "block" : "None",
-            src: "./profile.png",
+            src: profilePic,
             alt: "ProfilePicture",
             className: "image-hover-zoom"
         },

@@ -120,7 +120,7 @@ export default function NavBarHome(props) {
           position="relative"
           padding="0px 0px 0px 0px"
           whiteSpace="pre-wrap"
-          children="Market"
+          children="Items"
           {...getOverrideProps(overrides, "Market")}
         ></Text>
       </Flex>

@@ -15,9 +15,24 @@ import {
   SwitchField,
   Text,
   TextField,
+  Icon,
+  VisuallyHidden
 } from "@aws-amplify/ui-react";
+
+import {default as ImageUploader} from "./ImageUploader"
+
+const SaveIcon = () => (
+  <Icon
+    ariaLabel=""
+    pathData="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
+  />
+);
+
+
 export default function EditProfile(props) {
   const { overrides, ...rest } = props;
+
+
   return (
     <Flex
       gap="16px"
@@ -56,7 +71,7 @@ export default function EditProfile(props) {
           alignSelf="stretch"
           position="relative"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "EditProfile29766913")}
+          {...getOverrideProps(overrides, "EditProfileFlex")}
         >
           <MyIcon
             width="24px"
@@ -91,7 +106,7 @@ export default function EditProfile(props) {
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
             children="Edit Profile"
-            {...getOverrideProps(overrides, "Edit Profile29766916")}
+            {...getOverrideProps(overrides, "EditProfileHeading")}
           ></Text>
         </Flex>
         <Flex
@@ -141,9 +156,38 @@ export default function EditProfile(props) {
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children="Upload New Image"
-            {...getOverrideProps(overrides, "UploadNewImage")}
+            children="Upload New Picture"
+            {...getOverrideProps(overrides, "UploadImage")}
           ></Text>
+            <Text
+            fontFamily="Inter"
+            fontSize="16px"
+            fontWeight="400"
+            color="rgba(13,26,38,1)"
+            lineHeight="22px"
+            textAlign="left"
+            display="block"
+            direction="column"
+            justifyContent="unset"
+            textDecoration="underline"
+            width="unset"
+            height="unset"
+            gap="unset"
+            alignItems="unset"
+            shrink="0"
+            position="relative"
+            padding="0px 0px 0px 0px"
+            whiteSpace="pre-wrap"
+            children="Remove Picture"
+            {...getOverrideProps(overrides, "DeleteImage")}
+          ></Text>
+          <VisuallyHidden>
+          <input
+            type="file"
+            tabIndex={-1} 
+            {...getOverrideProps(overrides, "UploadImageInput")}
+          />
+        </VisuallyHidden>
         </Flex>
         <Flex
           gap="16px"
@@ -156,49 +200,52 @@ export default function EditProfile(props) {
           alignSelf="stretch"
           position="relative"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Forms")}
+          as="form"
+          {...getOverrideProps(overrides, "EditProfileForm")}
         >
           <TextField
             width="unset"
             height="unset"
-            label="Full name"
+            label="Username"
             placeholder="John Doe"
             shrink="0"
             alignSelf="stretch"
             size="default"
             isDisabled={false}
             labelHidden={false}
+            isRequired={true}
             variation="default"
-            {...getOverrideProps(overrides, "TextField29766922")}
+            {...getOverrideProps(overrides, "UsernameTextField")}
           ></TextField>
           <TextField
             width="unset"
             height="unset"
-            label="Location"
-            placeholder="Seattle, WA"
+            label="School"
+            placeholder="University of Pennsylvania, Philadelphia, PA"
             shrink="0"
             alignSelf="stretch"
             size="default"
             isDisabled={false}
             labelHidden={false}
+            isRequired={true}
             variation="default"
-            {...getOverrideProps(overrides, "TextField29766923")}
+            {...getOverrideProps(overrides, "SchoolTextField")}
           ></TextField>
           <TextField
             width="unset"
             height="unset"
-            label="Email"
-            placeholder="john.doe@awsamplify.com"
+            label="Preferred Email"
+            placeholder="john.doe@anneyhousing.com"
             shrink="0"
             alignSelf="stretch"
             size="default"
             isDisabled={false}
             labelHidden={false}
+            isRequired={true}
             variation="default"
-            {...getOverrideProps(overrides, "TextField29766924")}
+            {...getOverrideProps(overrides, "EmailTextField")}
           ></TextField>
-        </Flex>
-        <Button
+          <Button
           width="unset"
           height="unset"
           shrink="0"
@@ -206,8 +253,11 @@ export default function EditProfile(props) {
           isDisabled={false}
           variation="primary"
           children="Save"
-          {...getOverrideProps(overrides, "Button29766926")}
-        ></Button>
+          //type="submit"
+          {...getOverrideProps(overrides, "SaveButton")}
+        ><SaveIcon /> {'Save'}</Button>
+        </Flex>
+
         <Flex
           gap="16px"
           direction="row"
@@ -219,7 +269,7 @@ export default function EditProfile(props) {
           alignSelf="stretch"
           position="relative"
           padding="0px 0px 0px 0px"
-          {...getOverrideProps(overrides, "Notifications38534932")}
+          {...getOverrideProps(overrides, "NotificationsFlex")}
         >
           <Text
             fontFamily="Inter"
@@ -240,7 +290,7 @@ export default function EditProfile(props) {
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
             children="Notifications"
-            {...getOverrideProps(overrides, "Notifications38534933")}
+            {...getOverrideProps(overrides, "NotificationsText")}
           ></Text>
           <Text
             fontFamily="Inter"

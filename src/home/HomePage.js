@@ -39,7 +39,7 @@ function HomePage() {
         Right : {
             shrink : "1",
             grow: "1",
-            wrap : "wrap",
+            wrap : "nowrap",
             style:  {base: {width: '50%' },
                     large: {width: '100%'}},
             height: {base: "100%", large: "100vh"},
@@ -63,14 +63,14 @@ function HomePage() {
     
 
         imageHome: {
-            width: "100%",
-            height: "30%",
+            width: {base:"100%", large:"auto"},
+            height: {base:"auto", large:"30%"},
             src : "home2.png"
         },
 
         imageHome2: {
-            width: "100%",
-            height: "30%",
+            width: {base:"100%", large:"auto"},
+            height: {base:"auto", large:"30%"},
             src : "home.png"
         },
 

@@ -1,9 +1,43 @@
-type Listing @model @auth(rules: [{allow: public}, {allow: private}, {allow: owner}]) {
+type Bookedlisting @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner}]) {
   id: ID!
-  Location: String
-  HouseInfo: String
-  DurationRequired: String
-  Pictures: AWSURL
-  Price: Int
+  checkinDate: AWSDate
+  checkoutDate: AWSDate
+  userID: ID! @index(name: "byUser")
+  owner: String @auth(rules: [{ allow: owner, operations: [read, delete] }])
+}
+
+type User @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  userProfile: Profile! @hasOne
+  postedListings: [Listing] @hasMany(indexName: "byUser", fields: ["id"])
+  likedListings: [Listing] @hasMany(indexName: "byUser", fields: ["id"])
+  bookedListings: [Bookedlisting] @hasMany(indexName: "byUser", fields: ["id"])
+  owner: String @auth(rules: [{ allow: owner, operations: [read, delete] }])
+}
+
+type Profile @model @auth(rules: [{allow: private, operations: [read]}, {allow: owner}]) {
+  id: ID!
+  username: String!
+  picture: String
+  schoolname: String
+  email: String
+  owner: String @auth(rules: [{ allow: owner, operations: [read, delete] }])
+}
+
+type Listing @model @auth(rules: [{allow: public, operations: [read]}, {allow: private, operations: [read]}, {allow: owner}]) {
+  id: ID!
+  title: String!
+  aboutPlace: String!
+  space: String!
+  location: String!
+  locationInfo: String!
+  availableFrom: AWSDate!
+  availableTo: AWSDate!
+  features: [String!]!
+  monthlyCost: Int!
+  pictures: [String!]
+  additionalInfo: String
+  userID: ID! @index(name: "byUser")
+  owner: String @auth(rules: [{ allow: owner, operations: [read, delete] }])
 }
  
