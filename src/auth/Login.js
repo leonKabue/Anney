@@ -43,7 +43,8 @@ function Login(props) {
     return (
       <Flex
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-start"
+        height={{base:"95vh", large:"auto"}}
         //backgroundImage="linear-gradient(90deg, rgba(125,214,232,1), rgba(255,255,255,1))"
       >
         <Authenticator components={components} >
