@@ -10,7 +10,6 @@ function ListingPage() {
             gap="10px"
             direction="column"
             width="100%"
-            height="100%"
             justifyContent="flex-start"
             alignItems="center"
             overflow="hidden"
@@ -20,10 +19,12 @@ function ListingPage() {
             shrink= "1"
             grow= "1"
             marginTop= "65px"
-            position="static"  
+            position="static"
+            height= "100vh"
             style={{
                 zIndex: "1",
                 wrap : {base : "wrap", large: "wrap"},
+                
             }}
         >  
             <Flex
