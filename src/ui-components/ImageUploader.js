@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Card,
   Button,
@@ -8,27 +8,34 @@ import {
   Image,
   Loader,
   Icon,
-} from '@aws-amplify/ui-react';
-import { StorageManager } from '@aws-amplify/ui-react-storage';
+} from "@aws-amplify/ui-react";
+import { StorageManager } from "@aws-amplify/ui-react-storage";
 
 function ImageUploader(props) {
   return (
     <StorageManager
-      acceptedFileTypes={['image/*']}
-      accessLevel="guest"
+      acceptedFileTypes={["image/*"]}
+      accessLevel="public"
       maxFileCount={props.numImages}
       autoUpload={false}
       components={{
         Container({ children }) {
-          return <Card variation="outlined"
-                       backgroundColor={"transparent"}
-                       borderRadius= '5px'
-                       position={"relative"}
-                 >{children}</Card>;
+          return (
+            <Card
+              variation="outlined"
+              backgroundColor={"transparent"}
+              borderRadius="5px"
+              position={"relative"}
+              id={props.id}
+            >
+              {children}
+            </Card>
+          );
         },
         DropZone({ children, displayText, inDropZone, ...rest }) {
           return (
             <Flex
+              id={props.id}
               alignItems="center"
               direction="column"
               padding="medium"
@@ -43,19 +50,14 @@ function ImageUploader(props) {
         },
         FilePicker({ onClick }) {
           return (
-            <Button variation="primary" onClick={onClick}>
+            <Button id={props.id} variation="primary" onClick={onClick}>
               Browse
             </Button>
           );
         },
         FileList({ files, onCancelUpload, onDeleteUpload }) {
           return (
-            <Flex direction="row"
-                shrink="1"
-                grow="1"
-                wrap="wrap"
-            >
-                
+            <Flex direction="row" shrink="1" grow="1" wrap="wrap">
               {files.map(({ file, key, progress, id, status, uploadTask }) => (
                 <Flex
                   key={key}
@@ -90,7 +92,7 @@ function ImageUploader(props) {
                     variation="link"
                     size="small"
                     onClick={() => {
-                      if (status === 'uploading') {
+                      if (status === "uploading") {
                         onCancelUpload({ id, uploadTask });
                       } else {
                         onDeleteUpload({ id });
@@ -103,18 +105,18 @@ function ImageUploader(props) {
                       viewBox={{ width: 512, height: 512 }}
                       paths={[
                         {
-                          d: 'M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z',
-                          strokeWidth: '32',
-                          fill: 'none',
-                          strokeMiterlimit: '10',
-                          stroke: 'currentColor',
+                          d: "M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z",
+                          strokeWidth: "32",
+                          fill: "none",
+                          strokeMiterlimit: "10",
+                          stroke: "currentColor",
                         },
                         {
-                          d: 'M320 320L192 192m0 128l128-128',
-                          strokeWidth: '32',
-                          fill: 'none',
-                          strokeLinecap: 'round',
-                          stroke: 'currentColor',
+                          d: "M320 320L192 192m0 128l128-128",
+                          strokeWidth: "32",
+                          fill: "none",
+                          strokeLinecap: "round",
+                          stroke: "currentColor",
                         },
                       ]}
                     />
@@ -127,6 +129,6 @@ function ImageUploader(props) {
       }}
     />
   );
-};
+}
 
 export default ImageUploader;

@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Button, Flex, Grid, TextField, TextAreaField, useTheme } from "@aws-amplify/ui-react";
+import { Button, Flex, Grid, View, TextField, TextAreaField, Label, CheckboxField, useTheme } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createListing } from "../graphql/mutations";
 import DateRangePicker from "../ui-components/DateRangePicker"
 
 import ImageUploader from "./ImageUploader";
+import ImageUpload from "./ImageUpload";
 
 const client = generateClient();
 
@@ -78,6 +79,18 @@ export default function ListingCreateForm(props) {
 
   const MainHouseFeatures = "Fully equipped kitchen with appliances (oven, fridge, microwave).\nIn-unit laundry (washer and dryer).\nHeating and air conditioning.\nHigh-speed internet/Wi-Fi.\nCloset or wardrobe space.\nWork/study desk.\nSmoke detectors and carbon monoxide detectors.\nShower and/or bathtub\n";
   
+
+  const HouseFeatures = [
+    "Fully equipped kitchen with appliances (oven, fridge, microwave).\n",
+    "In-unit laundry (washer and dryer).\n",
+    "Heating and air conditioning.\n",
+    "High-speed internet/Wi-Fi.\n",
+    "Closet or wardrobe space.\n",
+    "Work/study desk.\n",
+    "Smoke detectors and carbon monoxide detectors.\n",
+    "Shower and/or bathtub\n",
+  ]
+
   return (
     <Grid
       as="form"
@@ -179,38 +192,13 @@ export default function ListingCreateForm(props) {
         {...getOverrideProps(overrides, "locationField")}
       ></TextField>
 
-      {/* Available from */}
-      <TextField
-        label=
-        {
-          <span style={{ display: "inline-flex" }}>
-            <span>Available From</span>
+      {/* Available from and Available to*/}
+      <Label>
+        <span style={{ display: "inline-flex" }}>
+            <span>Availablity</span>
             <span style={{ color: "red" }}>*</span>
           </span>
-        }
-        //placeholder="835th and Walnut"
-        isRequired={true}
-        isReadOnly={false}
-        type="date"
-        {...getOverrideProps(overrides, "availableFromField")}
-      ></TextField>
-        
-      {/* Available to */}
-      <TextField
-        label=
-        {
-          <span style={{ display: "inline-flex" }}>
-            <span>Available To</span>
-            <span style={{ color: "red" }}>*</span>
-          </span>
-        }
-        //placeholder="835th and Walnut"
-        isRequired={true}
-        isReadOnly={false}
-        type="date"
-        {...getOverrideProps(overrides, "availableFromField")}
-      ></TextField>
-
+      </Label>
       <DateRangePicker labelStart="Available From" labelEnd="Available To"/>
 
       {/* Monthly cost */}
@@ -254,7 +242,13 @@ export default function ListingCreateForm(props) {
       ></TextField>
 
       {/* Pictures */}
-      <ImageUploader numImages={10} />
+      <Label htmlFor={"Uploader"}>
+        <span style={{ display: "inline-flex" }}>
+            <span>Pictures</span>
+            <span style={{ color: "red" }}>*</span>
+          </span>
+      </Label>
+      <ImageUpload id={"Uploader"} numImages={10} />
       {/* Tell us a bit more about your house to help perspective renters */}
 
 
@@ -266,12 +260,12 @@ export default function ListingCreateForm(props) {
             <span style={{ color: "red" }}>*</span>
           </span>
         }
-        descriptiveText="Catch potential renters' attention with a unique and factual title"
+        descriptiveText="Catch potential guests' attention with a unique and factual title"
         placeholder="Stylish Single Room in 3 Bedroom Apt Near Center City"
         isRequired={true}
         isReadOnly={false}
 
-        {...getOverrideProps(overrides, "TitleTextField")}
+        {...getOverrideProps(overrides, "TitleText")}
       ></TextField>
 
       {/* about place */}
@@ -284,11 +278,11 @@ export default function ListingCreateForm(props) {
         }
         isRequired={true}
         isReadOnly={false}
-        descriptiveText="What would you like the guests to know"
-        placeholder="Step into this charming, updated 2-bedroom city apartment with a spacious layout and modern amenities. Hardwood floors, a fully-equipped kitchen with stainless steel appliances, and a cozy living space await you, complemented by serene views and abundant natural light. With comfortable queen beds, ample storage, and a dedicated work area, this urban haven combines the tranquility of home with the convenience of city living—complete with building security, laundry facilities, and private parking, all just a short walk from public transport and city buzz. Ready for your personal touch, this apartment is the perfect canvas for your new beginning."
-        rows = {7}
+        descriptiveText="Tell potential guest a bit about your place"
+        placeholder={"For Example:\nStep into this charming, updated 2-bedroom city apartment with a spacious layout and modern amenities. Hardwood floors, a fully-equipped kitchen with stainless steel appliances, and a cozy living space await you, complemented by serene views and abundant natural light. With comfortable queen beds, ample storage, and a dedicated work area, this urban haven combines the tranquility of home with the convenience of city living—complete with building security, laundry facilities, and private parking, all just a short walk from public transport and city buzz. Ready for your personal touch, this apartment is the perfect canvas for your new beginning."}
+        rows = {8}
 
-        {...getOverrideProps(overrides, "AboutPlaceTextAreaField")}
+        {...getOverrideProps(overrides, "AboutPlaceTextArea")}
       ></TextAreaField>
       
       {/* location info */}
@@ -302,14 +296,14 @@ export default function ListingCreateForm(props) {
         isRequired={true}
         isReadOnly={false}
         descriptiveText="How would you describe the location of your house"
-        placeholder="Located just a 10-minute walk from the vibrant University District, this property positions you perfectly for both academic focus and leisure. Enjoy the ease of access to campus libraries, lecture halls, and study groups without compromising on a quick trip to your favorite coffee shop or local eatery. For those nights out or cultural immersions, the neighborhood theater and art scene are just around the corner."
-        rows = {4}
+        placeholder={"For Example:\nLocated just a 10-minute walk from the vibrant University District, this property positions you perfectly for both academic focus and leisure. Enjoy the ease of access to campus libraries, lecture halls, and study groups without compromising on a quick trip to your favorite coffee shop or local eatery. For those nights out or cultural immersions, the neighborhood theater and art scene are just around the corner."}
+        rows = {5}
 
-        {...getOverrideProps(overrides, "LocationInfoTextAreaField")}
+        {...getOverrideProps(overrides, "LocationInfoTextArea")}
       ></TextAreaField>
       
       {/* House Features */}
-      <TextAreaField
+      {/* <TextAreaField
         label={
           <span style={{ display: "inline-flex" }}>
             <span>House Features</span>
@@ -318,12 +312,47 @@ export default function ListingCreateForm(props) {
         }
         isRequired={true}
         isReadOnly={false}
-        descriptiveText="What features does your house?"
+        descriptiveText="What features does your house have?"
         placeholder={MainHouseFeatures}
         rows = {8}
 
-        {...getOverrideProps(overrides, "AboutPlaceTextAreaField")}
-      ></TextAreaField>
+        {...getOverrideProps(overrides, "FeaturesTextArea")}
+      ></TextAreaField> */}
+
+      <Label htmlFor={"Features"}>
+        <span style={{ display: "inline-flex" }}>
+            <span>House Features</span>
+            <span style={{ color: "red" }}>*</span>
+          </span>
+      </Label>
+      <Flex
+        id={"Features"}
+        justifyContent={"center"}
+        alignContent={"center"}
+        alignItems={"flex-start"}
+        position={"relative"}
+        height={"auto"}
+        direction={"column"}
+        padding={"2px 10px 2px 10px"}
+        gap="0px"
+        style={{
+            border:"0.1px solid #000",
+            borderRadius: '4px',
+        }}>
+          <CheckboxField label={"All Features"} name={"All Features"}/>
+          <View paddingLeft={"10px"} paddingTop={"0px"}>
+            <CheckboxField label={HouseFeatures[0]} name={HouseFeatures[0]}/>
+            <CheckboxField label={HouseFeatures[1]} name={HouseFeatures[1]}/>
+            <CheckboxField label={HouseFeatures[2]} name={HouseFeatures[2]}/>
+            <CheckboxField label={HouseFeatures[3]} name={HouseFeatures[3]}/>
+            <CheckboxField label={HouseFeatures[4]} name={HouseFeatures[4]}/>
+            <CheckboxField label={HouseFeatures[5]} name={HouseFeatures[5]}/>
+            <CheckboxField label={HouseFeatures[6]} name={HouseFeatures[6]}/>
+            <CheckboxField label={HouseFeatures[7]} name={HouseFeatures[7]}/>
+          </View>
+        </Flex>
+
+
 
 
       {/* additional info */}
@@ -338,7 +367,7 @@ export default function ListingCreateForm(props) {
         descriptiveText="Anything else you would like guests to know?"
         rows = {4}
 
-        {...getOverrideProps(overrides, "AboutPlaceTextAreaField")}
+        {...getOverrideProps(overrides, "AdditionalInfoTextArea")}
       ></TextAreaField>
 
 

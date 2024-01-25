@@ -36,6 +36,7 @@ async function uploadProfilePic(file, profile) {
 }
 
 async function getProfilePic(key, setProfilePic) {
+  console.log(key)
   if (!key || key === "./profile.png") {
     setProfilePic("./profile.png");
     return;
@@ -72,11 +73,24 @@ function EditProfilePage(props) {
   const [newSchool, setNewSchool] = useState("");
   const [newUsername, setNewUserName] = useState("");
   const [newPicture, setNewPicture] = useState("");
+  const [stateChanged, setStateChanged] = useState(false);
 
   const acceptedFileTypes = ["image/png", "image/jpeg"];
   const hiddenInput = useRef(null);
 
   const [profilePic, setProfilePic] = useState("./profile.png");
+
+  const checkStateChanged = () => {
+    console.log("Checking state change", profile);
+    console.log("New pic", newPicture)
+    if ((newUsername.trim() !== "" && newUsername !== profile.username) ||
+    (newEmail.trim() !== "" && newEmail !== profile.email) ||
+    (newSchool.trim() !== "" && newSchool !== profile.school) ||
+    (newPicture.trim() !== "" && newPicture !== profile.picture)) {
+      setStateChanged(true);
+      console.log("Confirmed state changed")
+    }
+  }
 
   let navigate = useNavigate();
 
@@ -95,12 +109,15 @@ function EditProfilePage(props) {
   useEffect(() => {
     if (profile) {
       getProfilePic(profile.picture, setProfilePic);
+      checkStateChanged()
     }
   }, [profile, setProfile]);
 
   useEffect(() => {
     getProfilePic(newPicture, setProfilePic);
+    checkStateChanged();
   }, [newPicture, setNewPicture]);
+
 
   const profileOverrides = {
     EditProfile: {
@@ -165,7 +182,9 @@ function EditProfilePage(props) {
 
         if (files && files.length === 1 && profile) {
           uploadProfilePic(files[0], profile).then((result) => {
-            setNewPicture(result.key);
+            setNewPicture(result.key)
+            getProfilePic(newPicture, setProfilePic)
+            checkStateChanged()
           });
         }
       },
@@ -177,6 +196,8 @@ function EditProfilePage(props) {
         className: "hoverable-text",
         onClick: () => {
             setNewPicture("./profile.png")
+            getProfilePic(newPicture, setProfilePic)
+            checkStateChanged();
         }
     },
 
@@ -184,13 +205,16 @@ function EditProfilePage(props) {
       descriptiveText: profile ? profile.schoolname : "Add Your School",
       onChange: (e) => {
         setNewSchool(e.currentTarget.value);
+        checkStateChanged();
       },
+
     },
 
     EmailTextField: {
       descriptiveText: profile ? profile.email : "Add Your Email",
       onChange: (e) => {
         setNewEmail(e.currentTarget.value);
+        checkStateChanged();
       },
     },
 
@@ -198,25 +222,22 @@ function EditProfilePage(props) {
       descriptiveText: profile ? profile.username : "Add Your Username",
       onChange: (e) => {
         setNewUserName(e.currentTarget.value);
+        checkStateChanged();
       },
     },
 
     SaveButton: {
+      isDisabled: !stateChanged,
       onClick: () => {
-        if (
-          newUsername !== profile.username ||
-          newEmail !== profile.email ||
-          newSchool !== profile.school ||
-          newPicture !== profile.picture
-        ) {
+        if (stateChanged) {
           const newProfile = {
             id: profile.id,
-            username: newUsername !== "" ? newUsername : profile.username,
-            schoolname: newSchool !== "" ? newSchool : profile.schoolname,
-            email: newEmail !== "" ? newEmail : profile.email,
-            picture: newPicture !== "" ? newPicture : profile.picture,
+            username: newUsername.trim() !== "" ? newUsername : profile.username,
+            schoolname: newSchool.trim() !== "" ? newSchool : profile.schoolname,
+            email: newEmail.trim() !== "" ? newEmail : profile.email,
+            picture: newPicture.trim() !== "" ? newPicture : profile.picture,
           };
-          if (newPicture !== profile.picture) {
+          if (newPicture !== "" && newPicture !== profile.picture) {
             removeLastPic(profile.picture);
           }
           updateUserProfile(newProfile).then((result) => {

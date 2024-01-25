@@ -45,10 +45,12 @@ export const ACTION_DATASTORE_UPDATE_STARTED = `${EVENT_ACTION_DATASTORE_UPDATE}
 export const ACTION_DATASTORE_UPDATE_FINISHED = `${EVENT_ACTION_DATASTORE_UPDATE}:${STATUS_FINISHED}`;
 export const DATASTORE_QUERY_BY_ID_ERROR =
   "Error querying datastore item by id";
+
 export const AMPLIFY_SYMBOL =
   typeof Symbol !== "undefined" && typeof Symbol.for === "function"
     ? Symbol.for("amplify_default")
     : "@@amplify_default";
+
 export const useStateMutationAction = (initialState) => {
   const [state, setState] = React.useState(initialState);
   const setNewState = React.useCallback(
@@ -78,6 +80,8 @@ export const useStateMutationAction = (initialState) => {
   );
   return [state, setNewState];
 };
+
+
 export const useNavigateAction = (options) => {
   const { type, url, anchor, target } = options;
   const run = React.useMemo(() => {
@@ -126,6 +130,8 @@ export const useNavigateAction = (options) => {
   };
   return navigateAction;
 };
+
+
 export const findChildOverrides = (overrides, elementHierarchy) => {
   if (!overrides) {
     return null;
@@ -140,6 +146,8 @@ export const findChildOverrides = (overrides, elementHierarchy) => {
     }))
   );
 };
+
+
 export const getOverrideProps = (overrides, elementHierarchy) => {
   if (!overrides) {
     return null;
@@ -150,6 +158,8 @@ export const getOverrideProps = (overrides, elementHierarchy) => {
     .filter((m) => m?.[0]);
   return Object.fromEntries(componentOverrides);
 };
+
+
 export function getOverridesFromVariants(variants, props) {
   const variantValueKeys = [
     ...new Set(
@@ -177,6 +187,7 @@ export function getOverridesFromVariants(variants, props) {
     return { ...overrides, ...variant.overrides };
   }, {});
 }
+
 export const mergeVariantsAndOverrides = (variants, overrides) => {
   if (!variants && !overrides) {
     return null;
@@ -203,6 +214,7 @@ export const mergeVariantsAndOverrides = (variants, overrides) => {
     ...merged,
   };
 };
+
 export const isErrorWithMessage = (error) => {
   return (
     typeof error === "object" &&
@@ -211,6 +223,7 @@ export const isErrorWithMessage = (error) => {
     typeof error.message === "string"
   );
 };
+
 export const toErrorWithMessage = (maybeError) => {
   if (isErrorWithMessage(maybeError)) return maybeError;
   try {
@@ -219,9 +232,11 @@ export const toErrorWithMessage = (maybeError) => {
     return new Error(String(maybeError));
   }
 };
+
 export const getErrorMessage = (error) => {
   return toErrorWithMessage(error).message;
 };
+
 export const useTypeCastFields = ({ fields, modelName, schema }) => {
   return React.useMemo(() => {
     if (!schema) {
@@ -256,6 +271,7 @@ export const useTypeCastFields = ({ fields, modelName, schema }) => {
     return castFields;
   }, [fields, schema, modelName]);
 };
+
 export const useDataStoreCreateAction = ({
   model,
   fields: initialFields,
@@ -303,6 +319,7 @@ export const useDataStoreCreateAction = ({
     }
   };
 };
+
 export const useDataStoreUpdateAction = ({
   fields: initialFields,
   id,
@@ -360,6 +377,7 @@ export const useDataStoreUpdateAction = ({
     }
   };
 };
+
 export const useDataStoreDeleteAction =
   ({ model, id }) =>
   async () => {
@@ -395,6 +413,7 @@ export const useDataStoreDeleteAction =
       );
     }
   };
+
 export const createDataStorePredicate = (predicateObject) => {
   const {
     and: groupAnd,
@@ -447,6 +466,7 @@ export const useDataStoreCollection = ({ model, criteria, pagination }) => {
   React.useEffect(fetch, []);
   return result;
 };
+
 export const useDataStoreItem = ({ model, id }) => {
   const [item, setItem] = React.useState();
   const [isLoading, setLoading] = React.useState(false);
@@ -470,6 +490,7 @@ export function useDataStoreBinding(props) {
     ? useDataStoreItem(props)
     : useDataStoreCollection(props);
 }
+
 export const useAuthSignOutAction = (options) => async () => {
   try {
     Hub.dispatch(
@@ -503,6 +524,7 @@ export const useAuthSignOutAction = (options) => async () => {
     );
   }
 };
+
 export const useAuth = () => {
   const [result, setResult] = React.useState({
     error: undefined,
@@ -557,6 +579,8 @@ export const useAuth = () => {
     ...result,
   };
 };
+
+
 export const validateField = (value, validations) => {
   for (const validation of validations) {
     if (value === undefined || value === "" || value === null) {
@@ -578,11 +602,15 @@ export const validateField = (value, validations) => {
   }
   return { hasError: false };
 };
+
+
 export const parseDateValidator = (dateValidator) => {
   const isTimestamp =
     `${parseInt(dateValidator)}`.length === dateValidator.length;
   return isTimestamp ? parseInt(dateValidator) : dateValidator;
 };
+
+
 const checkValidation = (value, validation) => {
   if (validation.numValues?.length) {
     switch (validation.type) {
@@ -776,6 +804,8 @@ export function formatDate(date, dateFormat) {
       return date;
   }
 }
+
+
 export function formatTime(time, timeFormat) {
   if (time === undefined || time === null) {
     return time;
@@ -806,6 +836,8 @@ export function formatTime(time, timeFormat) {
       return time;
   }
 }
+
+
 export function formatDateTime(dateTimeStr, dateTimeFormat) {
   if (dateTimeStr === undefined || dateTimeStr === null) {
     return dateTimeStr;
@@ -824,6 +856,8 @@ export function formatDateTime(dateTimeStr, dateTimeFormat) {
   const time = formatTime(dateAndTime[1], dateTimeFormat.timeFormat);
   return `${date} - ${time}`;
 }
+
+
 export function formatter(value, formatterInput) {
   switch (formatterInput.type) {
     case "DateFormat":
@@ -836,6 +870,8 @@ export function formatter(value, formatterInput) {
       return value;
   }
 }
+
+
 export const fetchByPath = (input, path, accumlator = []) => {
   const currentPath = path.split(".");
   const head = currentPath.shift();
@@ -848,6 +884,7 @@ export const fetchByPath = (input, path, accumlator = []) => {
   }
   return accumlator[0];
 };
+
 export const processFile = async ({ file }) => {
   const fileExtension = file.name.split(".").pop();
   return file
