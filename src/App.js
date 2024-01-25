@@ -1,16 +1,10 @@
 import Nav from "./home/Nav";
-import HomePage from "./home/HomePage";
-import ListingPage from "./listing/ListingPage";
 import Footer from "./home/Footer";
-import Login from "./auth/Login";
-import EditProfilePage from "./profile/EditProfilePage";
-import HouseDetail from "./listing/HouseDetail";
-import AddListingPage from "./listing/AddListingPage";
 
 import "./App.css";
 
 import { Route, Routes } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 
 import "@aws-amplify/ui-react/styles.css"; // Import Amplify styles
 import { Loader } from "@aws-amplify/ui-react";
@@ -23,6 +17,15 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import { generateClient } from "@aws-amplify/api";
 import { createProfile, createUser } from "./graphql/mutations";
 import { listUsers } from "./graphql/queries";
+
+// Lazy loading components
+const HomePage = lazy(() => import('./home/HomePage'));
+const ListingPage = lazy(() => import('./listing/ListingPage'));
+const Login = lazy(() => import('./auth/Login'));
+const EditProfilePage = lazy(() => import('./profile/EditProfilePage'));
+const HouseDetail = lazy(() => import('./listing/HouseDetail'));
+const AddListingPage = lazy(() => import('./listing/AddListingPage'));
+
 
 const client = generateClient();
 
@@ -116,27 +119,31 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    const listener = ({ payload }) => {
+      switch (payload.event) {
+        case "signedIn":
+          console.log("user have been signedIn successfully.");
+          setIsUserSignedIn(true);
+          break;
+        case "signedOut":
+          console.log("user have been signedOut successfully.");
+          setIsUserSignedIn(false);
+          break;
+        default:
+          break;
+      }
+    };
 
-
-  Hub.listen("auth", ({ payload }) => {
-    switch (payload.event) {
-      case "signedIn":
-        console.log("user have been signedIn successfully.");
-        setIsUserSignedIn(true);
-        break;
-      case "signedOut":
-        console.log("user have been signedOut successfully.");
-        setIsUserSignedIn(false);
-        break;
-    }
-  });
+    Hub.listen("auth", listener);
+  }, []);
 
   if (isLoading) {
     return <Loader />;
   }
   return (
-    <>
-      <Nav isSignedIn={isUserSignedIn} user={user}/>
+    <Suspense fallback={<Loader />}>
+      <Nav isSignedIn={isUserSignedIn} user={user} />
 
       <Routes>
         <Route
@@ -171,7 +178,7 @@ function App() {
       </Routes>
 
       <Footer />
-    </>
+    </Suspense>
   );
 }
 
