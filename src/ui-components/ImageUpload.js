@@ -10,6 +10,7 @@ import {
   DropZone,
   VisuallyHidden,
   Loader,
+  useTheme
 } from "@aws-amplify/ui-react";
 
 import { uploadData, remove } from "aws-amplify/storage";
@@ -29,11 +30,16 @@ async function removePicture(key) {
 }
 
 function ImageUpload(props) {
-  const [files, setFiles] = React.useState([]);
-  const [change, setChange] = React.useState(false);
-  const [progress, setProgress] = React.useState([]);
 
   const hiddenInput = React.useRef(null);
+
+  const { tokens } = useTheme();
+
+  const errorBorderColor = tokens.colors.border.error.value;
+  const borderColor = tokens.colors.border.primary.value;
+
+  const [files, setFiles] = React.useState([]);
+  const [progress, setProgress] = React.useState([]);
 
   const onFilePickerChange = (event) => {
     const { files } = event.target;
@@ -80,6 +86,8 @@ function ImageUpload(props) {
 
     if (files.length > 0) {
       uploadAllPictures();
+    } else {
+      props.setPictures([])
     }
   }, [files]);
 
@@ -93,10 +101,18 @@ function ImageUpload(props) {
     props.setClearFiles(false);
   }, [props.clearFiles, props.setClearFiles]);
 
+  React.useEffect(() => {
+    if (props.resetFiles) {
+      setFiles([])
+    }
+    props.setResetFiles(false)
+  }, [props.resetFiles, props.setResetFiles])
+
   return (
     <Card
       variation="outlined"
       backgroundColor={"transparent"}
+      border = {files.length === 0 ? `1px solid ${errorBorderColor}` : `1px solid ${borderColor}`}
       borderRadius="5px"
       position={"relative"}
       alignItems="flex-start"

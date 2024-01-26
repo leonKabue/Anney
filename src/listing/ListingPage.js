@@ -1,9 +1,14 @@
 import { default as ListingCardCollection } from "../ui-components/ListingCardCollection"
 import { Flex, SearchField } from "@aws-amplify/ui-react"
 import DateRangePicker from "../ui-components/DateRangePicker"
+import dayjs from "dayjs"
+import { useState } from "react"
 
 
 function ListingPage() {
+
+    const [checkIn, setCheckIn] = useState(dayjs())
+    const [checkOut, setCheckOut] = useState(dayjs().add(1, "month"))
 
     return (
         <Flex
@@ -48,7 +53,7 @@ function ListingPage() {
                     placeholder="Location"
                     size="medium"
                     />
-                <DateRangePicker />
+                <DateRangePicker setStart={setCheckIn} setEnd={setCheckOut} setError={null}/>
             </Flex>
 
             <Flex

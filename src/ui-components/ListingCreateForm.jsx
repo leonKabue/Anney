@@ -9,6 +9,7 @@ import {
   Label,
   CheckboxField,
   useTheme,
+  Text,
 } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
@@ -32,7 +33,12 @@ async function createNewListing(listingData) {
 }
 
 export default function ListingCreateForm(props) {
-  const today = dayjs().format("MM-DD-YYYY");
+  const { tokens } = useTheme();
+
+  const errorBorderColor = tokens.colors.border.error.value;
+  const borderColor = tokens.colors.border.primary.value;
+
+  const today = dayjs();
 
   const initialListing = {
     title: "",
@@ -61,8 +67,6 @@ export default function ListingCreateForm(props) {
     ...rest
   } = props;
 
-  const { tokens } = useTheme();
-
   const [title, setTitle] = React.useState(initialListing.title);
   const [aboutPlace, setAboutPlace] = React.useState(initialListing.aboutPlace);
   const [space, setSpace] = React.useState(initialListing.space);
@@ -87,12 +91,14 @@ export default function ListingCreateForm(props) {
   const [listing, setListing] = React.useState(null);
 
   const [errors, setErrors] = React.useState({});
+  const [availableError, setAvailableError] = React.useState(false);
 
   const [featuresChecked, setFeaturesChecked] = React.useState(
     Array(8).fill(true)
   );
 
   const [clearFiles, setClearFiles] = React.useState(false);
+  const [resetFiles, setResetFiles]  = React.useState(false)
 
   const resetStateValues = () => {
     setTitle(initialListing.title);
@@ -116,20 +122,10 @@ export default function ListingCreateForm(props) {
     space: [{ type: "Required" }],
     location: [{ type: "Required" }],
     locationInfo: [{ type: "Required" }],
-    availableFrom: [
-      { type: "Required" },
-      { type: "BeAfter", strValues: [today] },
-    ],
-    availableTo: [
-      { type: "Required" },
-      { type: "BeAfter", strValues: [today] },
-    ],
-    features: [{ type: "Required" }],
     monthlyCost: [
       { type: "Required" },
       { type: "GreaterThanNum", numValues: [100] },
     ],
-    pictures: [{ type: "Required" }],
   };
 
   const runValidationTasks = async (
@@ -146,7 +142,11 @@ export default function ListingCreateForm(props) {
     if (customValidator) {
       validationResponse = await customValidator(value, validationResponse);
     }
-    setErrors((errors) => ({ ...errors, [fieldName]: validationResponse }));
+    setErrors((errors) => ({
+      ...errors,
+      [fieldName]: validationResponse,
+    }));
+
     return validationResponse;
   };
 
@@ -181,7 +181,46 @@ export default function ListingCreateForm(props) {
 
   React.useEffect(() => {
     console.log("Pictures", pictures);
+    setErrors((errors) => ({
+      ...errors,
+      ...(pictures.length === 0
+        ? {
+            pictures: {
+              hasError: true,
+              errorMessage: "Please  add some house pictures",
+            },
+          }
+        : { pictures: { hasError: false } }),
+    }));
   }, [pictures]);
+
+  React.useEffect(() => {
+    setErrors((errors) => ({
+      ...errors,
+      ...(availableError || availableFrom === null || availableTo === null
+        ? {
+            available: {
+              hasError: false,
+              errorMessage: "Please select valid availability dates",
+            },
+          }
+        : { available: { hasError: false } }),
+    }));
+  }, [availableError, availableFrom, availableTo]);
+
+  React.useEffect(() => {
+    setErrors((errors) => ({
+      ...errors,
+      ...(features.length === 0
+        ? {
+            features: {
+              hasError: true,
+              errorMessage: "Please select some house features",
+            },
+          }
+        : { features: { hasError: false } }),
+    }));
+  }, [features]);
 
   return (
     <Grid
@@ -236,12 +275,15 @@ export default function ListingCreateForm(props) {
             }
           });
 
+          console.log("submit");
+
           if (onSuccess) {
             onSuccess(modelFields);
           }
 
           if (clearOnSuccess) {
             resetStateValues();
+            setResetFiles(true);
           }
         } catch (err) {
           if (onError) {
@@ -332,7 +374,7 @@ export default function ListingCreateForm(props) {
             value = result?.location ?? value;
           }
 
-          if (errors.space?.hasError) {
+          if (errors.location?.hasError) {
             runValidationTasks("location", value);
           }
           setLocation(value);
@@ -348,7 +390,20 @@ export default function ListingCreateForm(props) {
           <span style={{ color: "red" }}>*</span>
         </span>
       </Label>
-      <DateRangePicker labelStart="Available From" labelEnd="Available To" />
+      <DateRangePicker
+        labelStart="Available From"
+        labelEnd="Available To"
+        errorStart={true}
+        errorEnd={true}
+        setStart={setAvailableFrom}
+        setEnd={setAvailableTo}
+        setError={setAvailableError}
+      />
+      {errors.available?.hasError ? (
+        <Text variation="error" fontSize={"14px"}>
+          {errors.available.errorMessage}
+        </Text>
+      ) : null}
 
       {/* Monthly cost */}
       <TextField
@@ -410,9 +465,16 @@ export default function ListingCreateForm(props) {
         profile={props.profile}
         clearFiles={clearFiles}
         setClearFiles={setClearFiles}
+        resetFiles={resetFiles}
+        setResetFiles={setResetFiles}
       />
-      {/* Tell us a bit more about your house to help perspective renters */}
+      {errors.pictures?.hasError ? (
+        <Text variation="error" fontSize={"0.875rem"}>
+          {errors.pictures.errorMessage}
+        </Text>
+      ) : null}
 
+      {/* Tell us a bit more about your house to help perspective renters */}
       {/* title */}
       <TextField
         label={
@@ -552,7 +614,6 @@ export default function ListingCreateForm(props) {
       ></TextAreaField>
 
       {/* House Features */}
-
       <CheckboxField
         label={
           <span style={{ display: "inline-flex" }}>
@@ -562,11 +623,8 @@ export default function ListingCreateForm(props) {
         }
         name={"All Features"}
         isIndeterminate={isIndeterminate()}
-        errorMessage={errors.features?.errorMessage}
-        hasError={errors.features?.hasError}
         checked={featuresChecked.every(Boolean)}
-        //disabled={true}
-        labelPosition="top"
+        labelPosition="start"
         onChange={(e) => {
           let checked = e.target.checked;
           if (isIndeterminate() === true || checked === true) {
@@ -574,11 +632,6 @@ export default function ListingCreateForm(props) {
           } else {
             setFeaturesChecked(Array(8).fill(false));
           }
-
-          if (errors.features?.hasError) {
-            runValidationTasks("features", features);
-          }
-          runValidationTasks("features", features);
         }}
       />
       <Flex
@@ -593,8 +646,8 @@ export default function ListingCreateForm(props) {
         gap="0px"
         style={{
           border: errors.features?.hasError
-            ? "1px solid red"
-            : "0.1px solid #000",
+            ? `1px solid ${errorBorderColor}`
+            : `1px solid ${borderColor}`,
           borderRadius: "4px",
         }}
       >
@@ -609,9 +662,6 @@ export default function ListingCreateForm(props) {
                 index === 0 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
           <CheckboxField
@@ -624,9 +674,6 @@ export default function ListingCreateForm(props) {
                 index === 1 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
           <CheckboxField
@@ -639,9 +686,6 @@ export default function ListingCreateForm(props) {
                 index === 2 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
           <CheckboxField
@@ -654,9 +698,6 @@ export default function ListingCreateForm(props) {
                 index === 3 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
           <CheckboxField
@@ -669,9 +710,6 @@ export default function ListingCreateForm(props) {
                 index === 4 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
           <CheckboxField
@@ -699,9 +737,6 @@ export default function ListingCreateForm(props) {
                 index === 6 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
           <CheckboxField
@@ -714,13 +749,15 @@ export default function ListingCreateForm(props) {
                 index === 7 ? checked : value
               );
               setFeaturesChecked(newFeaturesChecked);
-              if (errors.features?.hasError) {
-                runValidationTasks("features", features);
-              }
             }}
           />
         </View>
       </Flex>
+      {errors.features?.hasError ? (
+        <Text variation="error" fontSize={"0.875rem"}>
+          {errors.features.errorMessage}
+        </Text>
+      ) : null}
 
       {/* additional info */}
       <TextAreaField
@@ -736,6 +773,7 @@ export default function ListingCreateForm(props) {
         {...getOverrideProps(overrides, "AdditionalInfoTextArea")}
       ></TextAreaField>
 
+      {/* Buttons */}
       <Flex
         justifyContent="center"
         maxHeight={"50px"}
