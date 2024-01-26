@@ -1,16 +1,53 @@
 import * as React from "react";
-import { Button, Flex, Grid, View, TextField, TextAreaField, Label, CheckboxField, useTheme } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  View,
+  TextField,
+  TextAreaField,
+  Label,
+  CheckboxField,
+  useTheme,
+} from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createListing } from "../graphql/mutations";
-import DateRangePicker from "../ui-components/DateRangePicker"
 
-import ImageUploader from "./ImageUploader";
+import DateRangePicker from "../ui-components/DateRangePicker";
 import ImageUpload from "./ImageUpload";
+import dayjs from "dayjs";
 
 const client = generateClient();
 
+async function createNewListing(listingData) {
+  const newListing = await client.graphql({
+    query: createListing,
+    variables: {
+      input: listingData,
+    },
+  });
+
+  return newListing.data.createListing;
+}
+
 export default function ListingCreateForm(props) {
+  const today = dayjs().format("MM-DD-YYYY");
+
+  const initialListing = {
+    title: "",
+    aboutPlace: "",
+    space: "",
+    location: "",
+    locationInfo: "",
+    availableFrom: today,
+    availableTo: today,
+    features: [],
+    monthlyCost: "",
+    pictures: [],
+    additionalInfo: "",
+  };
+
   const {
     clearOnSuccess = true,
     onSuccess,
@@ -20,43 +57,79 @@ export default function ListingCreateForm(props) {
     onValidate,
     onChange,
     overrides,
+    profile,
     ...rest
   } = props;
+
   const { tokens } = useTheme();
-  const initialValues = {
-    Location: "",
-    HouseInfo: "",
-    DurationRequired: "",
-    Pictures: "",
-    Price: "",
-  };
 
-
-  const [Location, setLocation] = React.useState(initialValues.Location);
-  const [HouseInfo, setHouseInfo] = React.useState(initialValues.HouseInfo);
-  const [DurationRequired, setDurationRequired] = React.useState(
-    initialValues.DurationRequired
+  const [title, setTitle] = React.useState(initialListing.title);
+  const [aboutPlace, setAboutPlace] = React.useState(initialListing.aboutPlace);
+  const [space, setSpace] = React.useState(initialListing.space);
+  const [location, setLocation] = React.useState(initialListing.location);
+  const [locationInfo, setLocationInfo] = React.useState(
+    initialListing.locationInfo
   );
-  const [Pictures, setPictures] = React.useState(initialValues.Pictures);
-  const [Price, setPrice] = React.useState(initialValues.Price);
+  const [availableFrom, setAvailableFrom] = React.useState(
+    initialListing.availableFrom
+  );
+  const [availableTo, setAvailableTo] = React.useState(
+    initialListing.availableTo
+  );
+  const [features, setFeatures] = React.useState(initialListing.features);
+  const [monthlyCost, setMonthlyCost] = React.useState(
+    initialListing.monthlyCost
+  );
+  const [pictures, setPictures] = React.useState(initialListing.pictures);
+  const [additionalInfo, setAdditionalInfo] = React.useState(
+    initialListing.additionalInfo
+  );
+  const [listing, setListing] = React.useState(null);
+
   const [errors, setErrors] = React.useState({});
 
+  const [featuresChecked, setFeaturesChecked] = React.useState(
+    Array(8).fill(true)
+  );
+
+  const [clearFiles, setClearFiles] = React.useState(false);
 
   const resetStateValues = () => {
-    setLocation(initialValues.Location);
-    setHouseInfo(initialValues.HouseInfo);
-    setDurationRequired(initialValues.DurationRequired);
-    setPictures(initialValues.Pictures);
-    setPrice(initialValues.Price);
+    setTitle(initialListing.title);
+    setAboutPlace(initialListing.aboutPlace);
+    setSpace(initialListing.space);
+    setLocation(initialListing.Location);
+    setLocationInfo(initialListing.locationInfo);
+    setAvailableFrom(initialListing.availableFrom);
+    setAvailableTo(initialListing.availableTo);
+    setFeatures(initialListing.features);
+    setMonthlyCost(initialListing.monthlyCost);
+    setPictures(initialListing.pictures);
+    setAdditionalInfo(initialListing.additionalInfo);
+    setFeaturesChecked(Array(8).fill(false));
     setErrors({});
   };
 
   const validations = {
-    Location: [{ type: "Required" }],
-    HouseInfo: [{ type: "Required" }],
-    DurationRequired: [{ type: "Required" }],
-    Pictures: [{ type: "Required" }, { type: "URL" }],
-    Price: [{ type: "Required" }],
+    title: [{ type: "Required" }],
+    aboutPlace: [{ type: "Required" }],
+    space: [{ type: "Required" }],
+    location: [{ type: "Required" }],
+    locationInfo: [{ type: "Required" }],
+    availableFrom: [
+      { type: "Required" },
+      { type: "BeAfter", strValues: [today] },
+    ],
+    availableTo: [
+      { type: "Required" },
+      { type: "BeAfter", strValues: [today] },
+    ],
+    features: [{ type: "Required" }],
+    monthlyCost: [
+      { type: "Required" },
+      { type: "GreaterThanNum", numValues: [100] },
+    ],
+    pictures: [{ type: "Required" }],
   };
 
   const runValidationTasks = async (
@@ -77,8 +150,8 @@ export default function ListingCreateForm(props) {
     return validationResponse;
   };
 
-  const MainHouseFeatures = "Fully equipped kitchen with appliances (oven, fridge, microwave).\nIn-unit laundry (washer and dryer).\nHeating and air conditioning.\nHigh-speed internet/Wi-Fi.\nCloset or wardrobe space.\nWork/study desk.\nSmoke detectors and carbon monoxide detectors.\nShower and/or bathtub\n";
-  
+  const MainHouseFeatures =
+    "Fully equipped kitchen with appliances (oven, fridge, microwave).\nIn-unit laundry (washer and dryer).\nHeating and air conditioning.\nHigh-speed internet/Wi-Fi.\nCloset or wardrobe space.\nWork/study desk.\nSmoke detectors and carbon monoxide detectors.\nShower and/or bathtub\n";
 
   const HouseFeatures = [
     "Fully equipped kitchen with appliances (oven, fridge, microwave).\n",
@@ -89,7 +162,26 @@ export default function ListingCreateForm(props) {
     "Work/study desk.\n",
     "Smoke detectors and carbon monoxide detectors.\n",
     "Shower and/or bathtub\n",
-  ]
+  ];
+
+  const getFeatures = () => {
+    const housefeatures = featuresChecked
+      .map((value, index) => (value === true ? HouseFeatures[index] : ""))
+      .filter((feature) => feature !== "");
+    setFeatures(housefeatures);
+  };
+
+  const isIndeterminate = () => {
+    return featuresChecked.some(Boolean) && !featuresChecked.every(Boolean);
+  };
+
+  React.useEffect(() => {
+    getFeatures();
+  }, [featuresChecked, setFeaturesChecked]);
+
+  React.useEffect(() => {
+    console.log("Pictures", pictures);
+  }, [pictures]);
 
   return (
     <Grid
@@ -100,12 +192,18 @@ export default function ListingCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          Location,
-          HouseInfo,
-          DurationRequired,
-          Pictures,
-          Price,
+          title,
+          location,
+          locationInfo,
+          space,
+          aboutPlace,
+          availableFrom,
+          availableTo,
+          features,
+          monthlyCost,
+          pictures,
         };
+
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
             if (Array.isArray(modelFields[fieldName])) {
@@ -122,29 +220,26 @@ export default function ListingCreateForm(props) {
             return promises;
           }, [])
         );
+
         if (validationResponses.some((r) => r.hasError)) {
           return;
         }
+
         if (onSubmit) {
           modelFields = onSubmit(modelFields);
         }
+
         try {
           Object.entries(modelFields).forEach(([key, value]) => {
             if (typeof value === "string" && value === "") {
               modelFields[key] = null;
             }
           });
-          await client.graphql({
-            query: createListing.replaceAll("__typename", ""),
-            variables: {
-              input: {
-                ...modelFields,
-              },
-            },
-          });
+
           if (onSuccess) {
             onSuccess(modelFields);
           }
+
           if (clearOnSuccess) {
             resetStateValues();
           }
@@ -166,14 +261,39 @@ export default function ListingCreateForm(props) {
             <span style={{ color: "red" }}>*</span>
           </span>
         }
+        type="Text"
         placeholder="Single room in a 3 bedroom apartment"
         isRequired={true}
         isReadOnly={false}
-        errorMessage={"Required"}
-        hasError={false}
-        onBlur={() => {
-          
+        errorMessage={errors.space?.errorMessage}
+        hasError={errors.space?.hasError}
+        value={space}
+        onChange={(e) => {
+          let value = e.target.value;
+
+          if (onChange) {
+            const modelFields = {
+              title,
+              location,
+              locationInfo,
+              space: value,
+              aboutPlace,
+              availableFrom,
+              availableTo,
+              features,
+              monthlyCost,
+              pictures,
+            };
+            const result = onChange(modelFields);
+            value = result?.space ?? value;
+          }
+
+          if (errors.space?.hasError) {
+            runValidationTasks("space", value);
+          }
+          setSpace(value);
         }}
+        onBlur={() => runValidationTasks("space", space)}
         {...getOverrideProps(overrides, "Space")}
       ></TextField>
 
@@ -189,17 +309,46 @@ export default function ListingCreateForm(props) {
         isRequired={true}
         isReadOnly={false}
         type="Text"
+        errorMessage={errors.location?.errorMessage}
+        hasError={errors.location?.hasError}
+        value={location}
+        onChange={(e) => {
+          let value = e.target.value;
+
+          if (onChange) {
+            const modelFields = {
+              title,
+              location: value,
+              locationInfo,
+              space,
+              aboutPlace,
+              availableFrom,
+              availableTo,
+              features,
+              monthlyCost,
+              pictures,
+            };
+            const result = onChange(modelFields);
+            value = result?.location ?? value;
+          }
+
+          if (errors.space?.hasError) {
+            runValidationTasks("location", value);
+          }
+          setLocation(value);
+        }}
+        onBlur={() => runValidationTasks("location", location)}
         {...getOverrideProps(overrides, "locationField")}
       ></TextField>
 
       {/* Available from and Available to*/}
       <Label>
         <span style={{ display: "inline-flex" }}>
-            <span>Availablity</span>
-            <span style={{ color: "red" }}>*</span>
-          </span>
+          <span>Availablity</span>
+          <span style={{ color: "red" }}>*</span>
+        </span>
       </Label>
-      <DateRangePicker labelStart="Available From" labelEnd="Available To"/>
+      <DateRangePicker labelStart="Available From" labelEnd="Available To" />
 
       {/* Monthly cost */}
       <TextField
@@ -213,44 +362,56 @@ export default function ListingCreateForm(props) {
         isRequired={true}
         isReadOnly={false}
         type="number"
-        step="any"
-        value={Price}
+        step="50"
+        value={monthlyCost}
         onChange={(e) => {
           let value = isNaN(parseInt(e.target.value))
             ? e.target.value
             : parseInt(e.target.value);
           if (onChange) {
             const modelFields = {
-              Location,
-              HouseInfo,
-              DurationRequired,
-              Pictures,
-              Price: value,
+              title,
+              location,
+              locationInfo,
+              space,
+              aboutPlace,
+              availableFrom,
+              availableTo,
+              features,
+              monthlyCost: value,
+              pictures,
             };
             const result = onChange(modelFields);
-            value = result?.Price ?? value;
+            value = result?.monthlyCost ?? value;
           }
-          if (errors.Price?.hasError) {
-            runValidationTasks("Price", value);
+
+          if (errors.monthlyCost?.hasError) {
+            runValidationTasks("monthlyCost", value);
           }
-          setPrice(value);
+          setMonthlyCost(value);
         }}
-        onBlur={() => runValidationTasks("Price", Price)}
-        errorMessage={errors.Price?.errorMessage}
-        hasError={errors.Price?.hasError}
-        {...getOverrideProps(overrides, "Price")}
+        onBlur={() => runValidationTasks("monthlyCost", monthlyCost)}
+        errorMessage={errors.monthlyCost?.errorMessage}
+        hasError={errors.monthlyCost?.hasError}
+        {...getOverrideProps(overrides, "monthlyCost")}
       ></TextField>
 
       {/* Pictures */}
       <Label htmlFor={"Uploader"}>
         <span style={{ display: "inline-flex" }}>
-            <span>Pictures</span>
-            <span style={{ color: "red" }}>*</span>
-          </span>
+          <span>Pictures</span>
+          <span style={{ color: "red" }}>*</span>
+        </span>
       </Label>
-      <ImageUpload id={"Uploader"} numImages={10} />
+      <ImageUpload
+        id={"Uploader"}
+        numImages={10}
+        setPictures={setPictures}
+        profile={props.profile}
+        clearFiles={clearFiles}
+        setClearFiles={setClearFiles}
+      />
       {/* Tell us a bit more about your house to help perspective renters */}
-
 
       {/* title */}
       <TextField
@@ -264,7 +425,35 @@ export default function ListingCreateForm(props) {
         placeholder="Stylish Single Room in 3 Bedroom Apt Near Center City"
         isRequired={true}
         isReadOnly={false}
+        errorMessage={errors.title?.errorMessage}
+        hasError={errors.title?.hasError}
+        value={title}
+        onChange={(e) => {
+          let value = e.target.value;
 
+          if (onChange) {
+            const modelFields = {
+              title: value,
+              location,
+              locationInfo,
+              space,
+              aboutPlace,
+              availableFrom,
+              availableTo,
+              features,
+              monthlyCost,
+              pictures,
+            };
+            const result = onChange(modelFields);
+            value = result?.title ?? value;
+          }
+
+          if (errors.title?.hasError) {
+            runValidationTasks("title", value);
+          }
+          setTitle(value);
+        }}
+        onBlur={() => runValidationTasks("title", title)}
         {...getOverrideProps(overrides, "TitleText")}
       ></TextField>
 
@@ -279,12 +468,42 @@ export default function ListingCreateForm(props) {
         isRequired={true}
         isReadOnly={false}
         descriptiveText="Tell potential guest a bit about your place"
-        placeholder={"For Example:\nStep into this charming, updated 2-bedroom city apartment with a spacious layout and modern amenities. Hardwood floors, a fully-equipped kitchen with stainless steel appliances, and a cozy living space await you, complemented by serene views and abundant natural light. With comfortable queen beds, ample storage, and a dedicated work area, this urban haven combines the tranquility of home with the convenience of city living—complete with building security, laundry facilities, and private parking, all just a short walk from public transport and city buzz. Ready for your personal touch, this apartment is the perfect canvas for your new beginning."}
-        rows = {8}
+        placeholder={
+          "For Example:\nStep into this charming, updated 2-bedroom city apartment with a spacious layout and modern amenities. Hardwood floors, a fully-equipped kitchen with stainless steel appliances, and a cozy living space await you, complemented by serene views and abundant natural light. With comfortable queen beds, ample storage, and a dedicated work area, this urban haven combines the tranquility of home with the convenience of city living—complete with building security, laundry facilities, and private parking, all just a short walk from public transport and city buzz. Ready for your personal touch, this apartment is the perfect canvas for your new beginning."
+        }
+        rows={8}
+        errorMessage={errors.aboutPlace?.errorMessage}
+        hasError={errors.aboutPlace?.hasError}
+        value={aboutPlace}
+        onChange={(e) => {
+          let value = e.target.value;
 
+          if (onChange) {
+            const modelFields = {
+              title,
+              location,
+              locationInfo,
+              space,
+              aboutPlace: value,
+              availableFrom,
+              availableTo,
+              features,
+              monthlyCost,
+              pictures,
+            };
+            const result = onChange(modelFields);
+            value = result?.aboutPlace ?? value;
+          }
+
+          if (errors.aboutPlace?.hasError) {
+            runValidationTasks("aboutPlace", value);
+          }
+          setAboutPlace(value);
+        }}
+        onBlur={() => runValidationTasks("aboutPlace", aboutPlace)}
         {...getOverrideProps(overrides, "AboutPlaceTextArea")}
       ></TextAreaField>
-      
+
       {/* location info */}
       <TextAreaField
         label={
@@ -296,35 +515,72 @@ export default function ListingCreateForm(props) {
         isRequired={true}
         isReadOnly={false}
         descriptiveText="How would you describe the location of your house"
-        placeholder={"For Example:\nLocated just a 10-minute walk from the vibrant University District, this property positions you perfectly for both academic focus and leisure. Enjoy the ease of access to campus libraries, lecture halls, and study groups without compromising on a quick trip to your favorite coffee shop or local eatery. For those nights out or cultural immersions, the neighborhood theater and art scene are just around the corner."}
-        rows = {5}
+        placeholder={
+          "For Example:\nLocated just a 10-minute walk from the vibrant University District, this property positions you perfectly for both academic focus and leisure. Enjoy the ease of access to campus libraries, lecture halls, and study groups without compromising on a quick trip to your favorite coffee shop or local eatery. For those nights out or cultural immersions, the neighborhood theater and art scene are just around the corner."
+        }
+        rows={5}
+        errorMessage={errors.locationInfo?.errorMessage}
+        hasError={errors.locationInfo?.hasError}
+        value={locationInfo}
+        onChange={(e) => {
+          let value = e.target.value;
 
+          if (onChange) {
+            const modelFields = {
+              title,
+              location,
+              locationInfo: value,
+              space,
+              aboutPlace,
+              availableFrom,
+              availableTo,
+              features,
+              monthlyCost,
+              pictures,
+            };
+            const result = onChange(modelFields);
+            value = result?.locationInfo ?? value;
+          }
+
+          if (errors.locationInfo?.hasError) {
+            runValidationTasks("locationInfo", value);
+          }
+          setLocationInfo(value);
+        }}
+        onBlur={() => runValidationTasks("locationInfo", locationInfo)}
         {...getOverrideProps(overrides, "LocationInfoTextArea")}
       ></TextAreaField>
-      
+
       {/* House Features */}
-      {/* <TextAreaField
+
+      <CheckboxField
         label={
           <span style={{ display: "inline-flex" }}>
             <span>House Features</span>
             <span style={{ color: "red" }}>*</span>
           </span>
         }
-        isRequired={true}
-        isReadOnly={false}
-        descriptiveText="What features does your house have?"
-        placeholder={MainHouseFeatures}
-        rows = {8}
+        name={"All Features"}
+        isIndeterminate={isIndeterminate()}
+        errorMessage={errors.features?.errorMessage}
+        hasError={errors.features?.hasError}
+        checked={featuresChecked.every(Boolean)}
+        //disabled={true}
+        labelPosition="top"
+        onChange={(e) => {
+          let checked = e.target.checked;
+          if (isIndeterminate() === true || checked === true) {
+            setFeaturesChecked(Array(8).fill(true));
+          } else {
+            setFeaturesChecked(Array(8).fill(false));
+          }
 
-        {...getOverrideProps(overrides, "FeaturesTextArea")}
-      ></TextAreaField> */}
-
-      <Label htmlFor={"Features"}>
-        <span style={{ display: "inline-flex" }}>
-            <span>House Features</span>
-            <span style={{ color: "red" }}>*</span>
-          </span>
-      </Label>
+          if (errors.features?.hasError) {
+            runValidationTasks("features", features);
+          }
+          runValidationTasks("features", features);
+        }}
+      />
       <Flex
         id={"Features"}
         justifyContent={"center"}
@@ -336,24 +592,135 @@ export default function ListingCreateForm(props) {
         padding={"2px 10px 2px 10px"}
         gap="0px"
         style={{
-            border:"0.1px solid #000",
-            borderRadius: '4px',
-        }}>
-          <CheckboxField label={"All Features"} name={"All Features"}/>
-          <View paddingLeft={"10px"} paddingTop={"0px"}>
-            <CheckboxField label={HouseFeatures[0]} name={HouseFeatures[0]}/>
-            <CheckboxField label={HouseFeatures[1]} name={HouseFeatures[1]}/>
-            <CheckboxField label={HouseFeatures[2]} name={HouseFeatures[2]}/>
-            <CheckboxField label={HouseFeatures[3]} name={HouseFeatures[3]}/>
-            <CheckboxField label={HouseFeatures[4]} name={HouseFeatures[4]}/>
-            <CheckboxField label={HouseFeatures[5]} name={HouseFeatures[5]}/>
-            <CheckboxField label={HouseFeatures[6]} name={HouseFeatures[6]}/>
-            <CheckboxField label={HouseFeatures[7]} name={HouseFeatures[7]}/>
-          </View>
-        </Flex>
-
-
-
+          border: errors.features?.hasError
+            ? "1px solid red"
+            : "0.1px solid #000",
+          borderRadius: "4px",
+        }}
+      >
+        <View paddingLeft={"10px"} paddingTop={"0px"}>
+          <CheckboxField
+            label={HouseFeatures[0]}
+            name={HouseFeatures[0]}
+            checked={featuresChecked[0]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 0 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[1]}
+            name={HouseFeatures[1]}
+            checked={featuresChecked[1]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 1 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[2]}
+            name={HouseFeatures[2]}
+            checked={featuresChecked[2]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 2 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[3]}
+            name={HouseFeatures[3]}
+            checked={featuresChecked[3]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 3 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[4]}
+            name={HouseFeatures[4]}
+            checked={featuresChecked[4]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 4 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[5]}
+            name={HouseFeatures[5]}
+            checked={featuresChecked[5]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 5 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[6]}
+            name={HouseFeatures[6]}
+            checked={featuresChecked[6]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 6 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+          <CheckboxField
+            label={HouseFeatures[7]}
+            name={HouseFeatures[7]}
+            checked={featuresChecked[7]}
+            onChange={(e) => {
+              let checked = e.target.checked;
+              const newFeaturesChecked = featuresChecked.map((value, index) =>
+                index === 7 ? checked : value
+              );
+              setFeaturesChecked(newFeaturesChecked);
+              if (errors.features?.hasError) {
+                runValidationTasks("features", features);
+              }
+            }}
+          />
+        </View>
+      </Flex>
 
       {/* additional info */}
       <TextAreaField
@@ -365,13 +732,9 @@ export default function ListingCreateForm(props) {
         isRequired={false}
         isReadOnly={false}
         descriptiveText="Anything else you would like guests to know?"
-        rows = {4}
-
+        rows={4}
         {...getOverrideProps(overrides, "AdditionalInfoTextArea")}
       ></TextAreaField>
-
-
-      
 
       <Flex
         justifyContent="center"
@@ -384,6 +747,7 @@ export default function ListingCreateForm(props) {
           onClick={(event) => {
             event.preventDefault();
             resetStateValues();
+            setClearFiles(true);
           }}
           {...getOverrideProps(overrides, "ClearButton")}
         ></Button>

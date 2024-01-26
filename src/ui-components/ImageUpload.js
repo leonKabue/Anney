@@ -8,13 +8,31 @@ import {
   Image,
   Icon,
   DropZone,
-  VisuallyHidden
+  VisuallyHidden,
+  Loader,
 } from "@aws-amplify/ui-react";
+
+import { uploadData, remove } from "aws-amplify/storage";
 
 const acceptedFileTypes = ["image/png", "image/jpeg"];
 
+async function removePicture(key) {
+  if (key) {
+    try {
+      await remove({ key: key }).then((key) => {
+        console.log("Succesfully removed: ", key);
+      });
+    } catch (error) {
+      console.error("Could not remove last pic: ", error);
+    }
+  }
+}
+
 function ImageUpload(props) {
   const [files, setFiles] = React.useState([]);
+  const [change, setChange] = React.useState(false);
+  const [progress, setProgress] = React.useState([]);
+
   const hiddenInput = React.useRef(null);
 
   const onFilePickerChange = (event) => {
@@ -26,13 +44,61 @@ function ImageUpload(props) {
     setFiles(Array.from(files));
   };
 
+  React.useEffect(() => {
+    const uploadPicture = async (file, ind) => {
+      try {
+        const result = await uploadData({
+          key: `homepictures-${props.profile?.id}-${file.name}`,
+          data: file,
+          options: {
+            onProgress: ({ transferredBytes, totalBytes }) => {
+              if (totalBytes) {
+                const load = Math.round(transferredBytes / totalBytes) * 100;
+                console.log(`Upload progress ${load} %`);
+                const newProgress = progress.map((value, index) =>
+                  index === ind ? load : value
+                );
+                setProgress(newProgress);
+              }
+            },
+          },
+        }).result;
+        console.log("Key from Response: ", result.key);
+        return result;
+      } catch (error) {
+        console.log("Error : ", error);
+        removePicture(`homepictures-${props.profile?.id}-${file.name}`);
+        setFiles(files.filter((item) => item !== file))
+      }
+    };
+
+    const uploadAllPictures = async () => {
+        const promises = files.map(uploadPicture);
+        const results = await Promise.all(promises);
+        props.setPictures(results.filter((result) => result !== null));
+    };
+
+    if (files.length > 0) {
+      uploadAllPictures();
+    }
+  }, [files]);
+
+  React.useEffect(() => {
+    if (props.clearFiles) {
+      files.map((file) => {
+        removePicture(`homepictures-${props.profile?.id}-${file.name}`);
+      });
+      setFiles([]);
+    }
+    props.setClearFiles(false);
+  }, [props.clearFiles, props.setClearFiles]);
+
   return (
     <Card
       variation="outlined"
       backgroundColor={"transparent"}
       borderRadius="5px"
       position={"relative"}
-      id={props.id}
       alignItems="flex-start"
       padding="0px 0px 0px 0px"
     >
@@ -41,11 +107,13 @@ function ImageUpload(props) {
         border="none"
         acceptedFileTypes={acceptedFileTypes}
         onDropComplete={({ acceptedFiles, rejectedFiles }) => {
+          files.map((file) => {
+            removePicture(`homepictures-${props.profile?.id}-${file.name}`);
+          });
           setFiles(acceptedFiles);
         }}
       >
         <Flex
-          id={props.id}
           alignItems="center"
           direction="column"
           padding="0px 0px 0px 0px"
@@ -53,25 +121,28 @@ function ImageUpload(props) {
         >
           <Text>Drop House Pictures</Text>
           <Divider size="small" maxWidth="10rem" />
-          <Button id={props.id} variation="primary" onClick={() => hiddenInput.current.click()}>
+          <Button
+            variation="primary"
+            onClick={() => hiddenInput.current.click()}
+          >
             Browse
           </Button>
 
           <VisuallyHidden>
-          <input
-            type="file"
-            tabIndex={-1}
-            ref={hiddenInput}
-            onChange={onFilePickerChange}
-            multiple={true}
-            accept={acceptedFileTypes.join(',')}
-          />
-        </VisuallyHidden>
+            <input
+              type="file"
+              tabIndex={-1}
+              ref={hiddenInput}
+              onChange={onFilePickerChange}
+              multiple={true}
+              accept={acceptedFileTypes.join(",")}
+            />
+          </VisuallyHidden>
 
           <Flex direction="row" shrink="1" grow="1" wrap="wrap">
-
-            {files.map(( file ) => (
+            {files.map((file, index) => (
               <Flex
+                key={file.name}
                 justifyContent="center"
                 alignItems="center"
                 width="5rem"
@@ -87,6 +158,16 @@ function ImageUpload(props) {
                   onLoad={() => URL.revokeObjectURL(file)}
                 />
 
+                {progress[index] < 100 ? (
+                  <Loader
+                    position="absolute"
+                    size="large"
+                    percentage={progress[index]}
+                    isDeterminate
+                    isPercentageTextHidden
+                  />
+                ) : null}
+
                 <Button
                   opacity="50"
                   borderRadius="xxl"
@@ -95,7 +176,9 @@ function ImageUpload(props) {
                   variation="link"
                   size="small"
                   onClick={() => {
-                    setFiles(files.filter(item => item !== file))
+                    removePicture(
+                      `homepictures-${props.profile?.id}-${file.name}`
+                    ).then(setFiles(files.filter((item) => item !== file)));
                   }}
                 >
                   <Icon

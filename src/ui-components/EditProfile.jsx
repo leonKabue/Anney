@@ -19,7 +19,6 @@ import {
   VisuallyHidden
 } from "@aws-amplify/ui-react";
 
-import {default as ImageUploader} from "./ImageUploader"
 
 const SaveIcon = () => (
   <Icon

@@ -148,28 +148,28 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<HomePage isSignedIn={isUserSignedIn} />}
+          element={<HomePage isSignedIn={isUserSignedIn} user={user}/>}
         ></Route>
         <Route
           path="/home"
           exact={true}
-          element={<HomePage isSignedIn={isUserSignedIn} />}
+          element={<HomePage isSignedIn={isUserSignedIn} user={user}/>}
         ></Route>
         <Route
           path="/listings"
-          element={<ListingPage isSignedIn={isUserSignedIn} />}
+          element={<ListingPage isSignedIn={isUserSignedIn} user={user}/>}
         ></Route>
         <Route
           path="/login"
-          element={<Login isSignedIn={isUserSignedIn} />}
+          element={<Login isSignedIn={isUserSignedIn} user={user}/>}
         ></Route>
         <Route
           path="/listings-details"
-          element={<HouseDetail isSignedIn={isUserSignedIn} />}
+          element={<HouseDetail isSignedIn={isUserSignedIn} user={user}/>}
         ></Route>
         <Route
           path="/listings-add"
-          element={<AddListingPage isSignedIn={isUserSignedIn} />}
+          element={<AddListingPage isSignedIn={isUserSignedIn} user={user}/>}
         ></Route>
         <Route
           path="/profile"
