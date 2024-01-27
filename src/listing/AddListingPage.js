@@ -77,7 +77,7 @@ function AddListingPage(props) {
                 children={"Add Listing Information"}
                 {...getOverrideProps(props.overrides, "AddListingHeader")}
             ></Text>
-            <ListingCreateForm overrides={ListingCreateFormOverride} profile={props.user?.userProfile}/>
+            <ListingCreateForm overrides={ListingCreateFormOverride} profile={props.user?.userProfile} user={props.user}/>
         </Flex>
     )
 }

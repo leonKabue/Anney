@@ -68,7 +68,7 @@ function ImageUpload(props) {
               }
             },
           },
-        }).result;
+        }).result.key;
         console.log("Key from Response: ", result.key);
         return result;
       } catch (error) {

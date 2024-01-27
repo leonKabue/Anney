@@ -64,6 +64,7 @@ export default function ListingCreateForm(props) {
     onChange,
     overrides,
     profile,
+    user,
     ...rest
   } = props;
 
@@ -200,7 +201,7 @@ export default function ListingCreateForm(props) {
       ...(availableError || availableFrom === null || availableTo === null
         ? {
             available: {
-              hasError: false,
+              hasError: true,
               errorMessage: "Please select valid availability dates",
             },
           }
@@ -221,6 +222,10 @@ export default function ListingCreateForm(props) {
         : { features: { hasError: false } }),
     }));
   }, [features]);
+
+  React.useEffect(() => {
+    console.log("Listing", listing)
+  }, [listing])
 
   return (
     <Grid
@@ -243,26 +248,6 @@ export default function ListingCreateForm(props) {
           pictures,
         };
 
-        const validationResponses = await Promise.all(
-          Object.keys(validations).reduce((promises, fieldName) => {
-            if (Array.isArray(modelFields[fieldName])) {
-              promises.push(
-                ...modelFields[fieldName].map((item) =>
-                  runValidationTasks(fieldName, item)
-                )
-              );
-              return promises;
-            }
-            promises.push(
-              runValidationTasks(fieldName, modelFields[fieldName])
-            );
-            return promises;
-          }, [])
-        );
-
-        if (validationResponses.some((r) => r.hasError)) {
-          return;
-        }
 
         if (onSubmit) {
           modelFields = onSubmit(modelFields);
@@ -274,6 +259,24 @@ export default function ListingCreateForm(props) {
               modelFields[key] = null;
             }
           });
+          
+
+          const newListing = await createNewListing({
+            title: title,
+            aboutPlace: aboutPlace,
+            space: space,
+            location: location,
+            locationInfo: locationInfo,
+            availableFrom: availableFrom.format('YYYY-MM-DD'),
+            availableTo: availableTo.format('YYYY-MM-DD'),
+            features: features,
+            monthlyCost: monthlyCost,
+            pictures: pictures,
+            additionalInfo: additionalInfo,
+            userID: user.id
+          })
+
+          setListing(newListing);
 
           console.log("submit");
 
@@ -286,6 +289,7 @@ export default function ListingCreateForm(props) {
             setResetFiles(true);
           }
         } catch (err) {
+          console.log("Errored", user, err)
           if (onError) {
             const messages = err.errors.map((e) => e.message).join("\n");
             onError(modelFields, messages);

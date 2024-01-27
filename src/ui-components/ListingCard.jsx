@@ -1,16 +1,47 @@
-/***************************************************************************
- * The contents of this file were generated with Amplify Studio.           *
- * Please refrain from making any modifications to this file.              *
- * Any changes to this file will be overwritten when running amplify pull. *
- **************************************************************************/
 
-/* eslint-disable */
 import * as React from "react";
 import { getOverrideProps } from "./utils";
 import { Flex, Image, Text } from "@aws-amplify/ui-react";
 import MyIcon from "./MyIcon";
+
+import { getUrl } from "aws-amplify/storage";
+
+
 export default function ListingCard(props) {
   const { listing, overrides, ...rest } = props;
+
+  const [pictures, setPictures] = React.useState(["../pictures_placeholder.png"]);
+  const [currentPicture, setCurrentPicture] = React.useState(0)
+
+
+  React.useEffect(() => {
+    const getPicture = async (picture) => {
+      try {
+        const picURL = await getUrl({
+          key: picture,
+          options: {
+            accessLevel: 'guest',
+            validateObjectExistence: true,
+          }
+        });
+        return picURL.url;
+      } catch (error) {
+        console.log("Error loading pictures: ", error)
+        setPictures(["../pictures_placeholder.png"])
+      }
+    }
+    const getAllPictures = async () => {
+      const promises = listing.pictures.map(getPicture);
+      const results = await Promise.all(promises)
+      setPictures(results)
+    }
+    if  (listing.pictures.length > 0) {
+      getAllPictures();
+    }
+    console.log(pictures)
+  }, [listing.pictures])
+
+
   return (
     <Flex
       gap="0"
@@ -31,25 +62,23 @@ export default function ListingCard(props) {
         direction="column"
         width="unset"
         height="unset"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-        shrink="0"
+        justifyContent="center"
+        alignItems="center"
+        grow="1"
+        shrink="1"
         position="relative"
         padding="0px 0px 0px 0px"
         {...getOverrideProps(overrides, "Frame 437")}
       >
         <Image
-          width="279px"
-          height="233px"
+          width="320px"
+          height="230px"
           display="block"
-          gap="unset"
-          alignItems="unset"
-          justifyContent="unset"
-          shrink="0"
+          shrink="1"
           position="relative"
           padding="0px 0px 0px 0px"
-          objectFit="cover"
-          src={listing?.Pictures}
+          src={pictures[currentPicture]}
+          alt={"Listing Picture"}
           {...getOverrideProps(overrides, "image")}
         ></Image>
       </Flex>
@@ -61,19 +90,21 @@ export default function ListingCard(props) {
         justifyContent="center"
         alignItems="flex-start"
         overflow="hidden"
-        shrink="0"
+        shrink="1"
+        grow="1"
         position="relative"
         padding="0px 10px 0px 10px"
         {...getOverrideProps(overrides, "Card Area")}
       >
         <Flex
-          gap="20px"
+          gap="10px"
           direction="column"
-          width="329px"
-          height="221px"
+          width="300px"
+          height="230px"
           justifyContent="center"
           alignItems="flex-start"
-          shrink="0"
+          shrink="1"
+          grow="1"
           position="relative"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Frame 438")}
@@ -86,7 +117,8 @@ export default function ListingCard(props) {
             alignItems="unset"
             justifyContent="unset"
             overflow="hidden"
-            shrink="0"
+            shrink="1"
+            grow="1"
             position="relative"
             padding="0px 0px 0px 0px"
             type="favorite_border"
@@ -101,17 +133,13 @@ export default function ListingCard(props) {
             textAlign="left"
             display="block"
             direction="column"
-            justifyContent="unset"
-            width="unset"
-            height="unset"
-            gap="unset"
-            alignItems="unset"
-            shrink="0"
+            shrink="1"
+            grow="1"
             alignSelf="stretch"
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children={listing?.Location}
+            children={listing?.location}
             {...getOverrideProps(overrides, "Location")}
           ></Text>
           <Text
@@ -129,12 +157,13 @@ export default function ListingCard(props) {
             height="30px"
             gap="unset"
             alignItems="unset"
-            shrink="0"
+            shrink="1"
+            grow="1"
             alignSelf="stretch"
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children={listing?.HouseInfo}
+            children={listing?.aboutPlace}
             {...getOverrideProps(overrides, "Space")}
           ></Text>
           <Text
@@ -142,7 +171,7 @@ export default function ListingCard(props) {
             fontSize="16px"
             fontWeight="500"
             color="rgba(13,26,38,1)"
-            lineHeight="20px"
+            lineHeight="30px"
             textAlign="left"
             display="block"
             direction="column"
@@ -151,12 +180,13 @@ export default function ListingCard(props) {
             height="unset"
             gap="unset"
             alignItems="unset"
-            shrink="0"
+            shrink="1"
+            grow="1"
             alignSelf="stretch"
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children={"$" + listing?.Price + " per month"}
+            children={"$" + listing?.monthlyCost + " per month"}
             {...getOverrideProps(overrides, "Price")}
           ></Text>
         </Flex>
