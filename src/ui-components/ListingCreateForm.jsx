@@ -99,13 +99,13 @@ export default function ListingCreateForm(props) {
   );
 
   const [clearFiles, setClearFiles] = React.useState(false);
-  const [resetFiles, setResetFiles]  = React.useState(false)
+  const [resetFiles, setResetFiles] = React.useState(false);
 
   const resetStateValues = () => {
     setTitle(initialListing.title);
     setAboutPlace(initialListing.aboutPlace);
     setSpace(initialListing.space);
-    setLocation(initialListing.Location);
+    setLocation(initialListing.location);
     setLocationInfo(initialListing.locationInfo);
     setAvailableFrom(initialListing.availableFrom);
     setAvailableTo(initialListing.availableTo);
@@ -177,6 +177,10 @@ export default function ListingCreateForm(props) {
   };
 
   React.useEffect(() => {
+    console.log("Location", location);
+  }, [location]);
+
+  React.useEffect(() => {
     getFeatures();
   }, [featuresChecked, setFeaturesChecked]);
 
@@ -224,8 +228,8 @@ export default function ListingCreateForm(props) {
   }, [features]);
 
   React.useEffect(() => {
-    console.log("Listing", listing)
-  }, [listing])
+    console.log("Listing", listing);
+  }, [listing]);
 
   return (
     <Grid
@@ -248,7 +252,6 @@ export default function ListingCreateForm(props) {
           pictures,
         };
 
-
         if (onSubmit) {
           modelFields = onSubmit(modelFields);
         }
@@ -259,7 +262,6 @@ export default function ListingCreateForm(props) {
               modelFields[key] = null;
             }
           });
-          
 
           const newListing = await createNewListing({
             title: title,
@@ -267,14 +269,14 @@ export default function ListingCreateForm(props) {
             space: space,
             location: location,
             locationInfo: locationInfo,
-            availableFrom: availableFrom.format('YYYY-MM-DD'),
-            availableTo: availableTo.format('YYYY-MM-DD'),
+            availableFrom: availableFrom.format("YYYY-MM-DD"),
+            availableTo: availableTo.format("YYYY-MM-DD"),
             features: features,
             monthlyCost: monthlyCost,
             pictures: pictures,
             additionalInfo: additionalInfo,
-            userID: user.id
-          })
+            userID: user.id,
+          });
 
           setListing(newListing);
 
@@ -289,7 +291,9 @@ export default function ListingCreateForm(props) {
             setResetFiles(true);
           }
         } catch (err) {
-          console.log("Errored", user, err)
+          console.log("Errored", err);
+          resetStateValues();
+          setResetFiles(true);
           if (onError) {
             const messages = err.errors.map((e) => e.message).join("\n");
             onError(modelFields, messages);
@@ -317,23 +321,6 @@ export default function ListingCreateForm(props) {
         onChange={(e) => {
           let value = e.target.value;
 
-          if (onChange) {
-            const modelFields = {
-              title,
-              location,
-              locationInfo,
-              space: value,
-              aboutPlace,
-              availableFrom,
-              availableTo,
-              features,
-              monthlyCost,
-              pictures,
-            };
-            const result = onChange(modelFields);
-            value = result?.space ?? value;
-          }
-
           if (errors.space?.hasError) {
             runValidationTasks("space", value);
           }
@@ -351,32 +338,15 @@ export default function ListingCreateForm(props) {
             <span style={{ color: "red" }}>*</span>
           </span>
         }
-        placeholder="835th and Walnut"
+        type="Text"
+        placeholder="845th and Walnut"
         isRequired={true}
         isReadOnly={false}
-        type="Text"
         errorMessage={errors.location?.errorMessage}
         hasError={errors.location?.hasError}
         value={location}
         onChange={(e) => {
           let value = e.target.value;
-
-          if (onChange) {
-            const modelFields = {
-              title,
-              location: value,
-              locationInfo,
-              space,
-              aboutPlace,
-              availableFrom,
-              availableTo,
-              features,
-              monthlyCost,
-              pictures,
-            };
-            const result = onChange(modelFields);
-            value = result?.location ?? value;
-          }
 
           if (errors.location?.hasError) {
             runValidationTasks("location", value);
@@ -384,7 +354,7 @@ export default function ListingCreateForm(props) {
           setLocation(value);
         }}
         onBlur={() => runValidationTasks("location", location)}
-        {...getOverrideProps(overrides, "locationField")}
+        {...getOverrideProps(overrides, "Location")}
       ></TextField>
 
       {/* Available from and Available to*/}

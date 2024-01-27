@@ -51,6 +51,7 @@ function ImageUpload(props) {
   };
 
   React.useEffect(() => {
+    console.log("Files", files)
     const uploadPicture = async (file, ind) => {
       try {
         const result = await uploadData({
@@ -68,9 +69,9 @@ function ImageUpload(props) {
               }
             },
           },
-        }).result.key;
+        }).result;
         console.log("Key from Response: ", result.key);
-        return result;
+        return result.key;
       } catch (error) {
         console.log("Error : ", error);
         removePicture(`homepictures-${props.profile?.id}-${file.name}`);
@@ -93,6 +94,7 @@ function ImageUpload(props) {
 
   React.useEffect(() => {
     if (props.clearFiles) {
+      console.log("clearing files")
       files.map((file) => {
         removePicture(`homepictures-${props.profile?.id}-${file.name}`);
       });

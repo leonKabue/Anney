@@ -46,7 +46,7 @@ width: 20% !important;
 }
 
 .hoverable-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .site-footer {

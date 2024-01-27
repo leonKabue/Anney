@@ -38,7 +38,6 @@ export default function ListingCard(props) {
     if  (listing.pictures.length > 0) {
       getAllPictures();
     }
-    console.log(pictures)
   }, [listing.pictures])
 
 

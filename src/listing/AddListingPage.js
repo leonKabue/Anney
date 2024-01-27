@@ -22,18 +22,6 @@ function AddListingPage(props) {
             shrink: "1",
             grow: "1"
         },
-
-        Location: {
-            width: "100%",
-            shrink: "1",
-            grow: "1"
-        },
-
-        HouseInfo : {
-            width: "100%",
-            shrink: "1",
-            grow: "1"
-        },
     }
 
     return (
